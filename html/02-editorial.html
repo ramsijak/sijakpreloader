@@ -85,34 +85,80 @@
     }
 
     #app {
-      max-width:1280px;
+      max-width:1400px;
       min-height:0;
-      height:min(860px, calc(100dvh - 48px));
+      height:100dvh;
       border-radius:28px;
       box-shadow:var(--shadow);
       display:grid;
-      grid-template-columns:minmax(0, 1.45fr) minmax(360px, 0.95fr);
-      grid-template-rows:auto 1fr;
+      grid-template-columns:1fr minmax(320px, 0.9fr);
+      grid-template-rows:auto auto 1fr;
+      overflow:hidden;
     }
   }
 
   .masthead {
     position:relative;
     z-index:1;
-    padding:18px 22px 14px;
-    border-bottom:1px solid rgba(25, 21, 18, 0.18);
+    padding:12px 18px 10px;
+    border-bottom:none;
     display:grid;
-    gap:8px;
+    gap:4px;
   }
 
   @media (min-width: 980px) {
     .masthead {
       grid-column:1 / 3;
-      padding:24px 40px 18px;
+      padding:14px 28px 10px;
       grid-template-columns:1fr auto 1fr;
       align-items:end;
-      gap:16px;
+      gap:12px;
     }
+  }
+
+  .cta-header {
+    padding:10px 18px;
+    background:linear-gradient(180deg, rgba(155,63,26,0.12), rgba(155,63,26,0.06));
+    border-bottom:1px solid rgba(155,63,26,0.15);
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+  }
+
+  @media (min-width: 980px) {
+    .cta-header {
+      grid-column:1 / 3;
+      padding:12px 28px;
+    }
+  }
+
+  .cta-header-label {
+    font-family:"DM Mono", monospace;
+    font-size:9px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--muted);
+  }
+
+  .cta-header-btn {
+    padding:9px 14px;
+    border:none;
+    border-radius:999px;
+    background:var(--accent);
+    color:#fff5ed;
+    font-family:"Manrope", system-ui, sans-serif;
+    font-size:12px;
+    font-weight:700;
+    cursor:pointer;
+    white-space:nowrap;
+    flex-shrink:0;
+    box-shadow:0 8px 20px rgba(155,63,26,0.18);
+    transition:transform 150ms ease;
+  }
+
+  .cta-header-btn:hover {
+    transform:translateY(-1px);
   }
 
   .masthead-row,
@@ -152,29 +198,31 @@
   .main {
     position:relative;
     z-index:1;
-    padding:22px 22px 120px;
+    padding:14px 16px 14px;
     display:flex;
     flex-direction:column;
-    gap:18px;
+    gap:12px;
+    overflow:auto;
+    min-height:0;
   }
 
   @media (min-width: 980px) {
     .main {
-      padding:36px 40px 34px;
+      padding:16px 24px 20px;
       border-right:1px solid rgba(25, 21, 18, 0.12);
+      gap:16px;
       overflow:auto;
-      gap:24px;
     }
   }
 
   .lede-meta {
     display:flex;
     flex-wrap:wrap;
-    gap:10px;
+    gap:8px;
     align-items:center;
     font-family:"DM Mono", monospace;
-    font-size:10px;
-    letter-spacing:0.14em;
+    font-size:9px;
+    letter-spacing:0.12em;
     text-transform:uppercase;
     color:var(--accent);
   }
@@ -188,14 +236,14 @@
 
   .hero-grid {
     display:grid;
-    gap:18px;
+    gap:12px;
   }
 
   @media (min-width: 980px) {
     .hero-grid {
-      grid-template-columns:minmax(0, 1fr) 240px;
+      grid-template-columns:minmax(0, 1fr) 180px;
       align-items:start;
-      gap:28px;
+      gap:14px;
     }
   }
 
@@ -203,81 +251,81 @@
     margin:0;
     font-family:"Instrument Serif", Georgia, serif;
     font-weight:400;
-    font-size:52px;
-    line-height:0.92;
+    font-size:40px;
+    line-height:0.95;
     letter-spacing:-0.04em;
-    max-width:10ch;
+    max-width:11ch;
   }
 
   h1 i { color:var(--accent); }
 
   @media (min-width: 980px) {
-    h1 { font-size:92px; }
+    h1 { font-size:56px; }
   }
 
   .deck {
-    margin:14px 0 0;
-    max-width:60ch;
-    font-size:15px;
-    line-height:1.7;
+    margin:6px 0 0;
+    max-width:50ch;
+    font-size:13px;
+    line-height:1.5;
     color:#403832;
   }
 
   @media (min-width: 980px) {
-    .deck { font-size:19px; margin-top:18px; }
+    .deck { font-size:14px; margin-top:8px; }
   }
 
   .hero-note {
     display:grid;
-    gap:12px;
+    gap:8px;
     align-self:start;
-    padding:16px;
+    padding:12px;
     border:1px solid rgba(25, 21, 18, 0.14);
     background:rgba(255,255,255,0.35);
-    border-radius:20px;
-    box-shadow:0 12px 36px rgba(25, 21, 18, 0.06);
+    border-radius:16px;
+    box-shadow:0 8px 24px rgba(25, 21, 18, 0.05);
   }
 
   .hero-note-label {
     font-family:"DM Mono", monospace;
-    font-size:10px;
-    letter-spacing:0.16em;
+    font-size:9px;
+    letter-spacing:0.14em;
     text-transform:uppercase;
     color:var(--muted);
   }
 
   .hero-note-value {
     font-family:"Instrument Serif", Georgia, serif;
-    font-size:42px;
+    font-size:32px;
     line-height:0.9;
     letter-spacing:-0.05em;
   }
 
   .hero-note-copy {
-    font-size:13px;
-    line-height:1.55;
+    font-size:12px;
+    line-height:1.4;
     color:var(--muted);
   }
 
   .signal-grid {
     display:grid;
-    gap:14px;
+    gap:12px;
   }
 
   @media (min-width: 980px) {
     .signal-grid {
-      grid-template-columns:minmax(0, 1fr) minmax(220px, 260px);
+      grid-template-columns:minmax(0, 1fr) minmax(200px, 240px);
       align-items:start;
-      gap:18px;
+      gap:14px;
     }
   }
 
   .prob-wrap,
   .briefing {
     border:1px solid rgba(25, 21, 18, 0.14);
-    border-radius:22px;
+    border-radius:18px;
     background:rgba(255,255,255,0.42);
-    padding:18px;
+    padding:14px;
   }
 
   .prob-header,
@@ -286,8 +334,8 @@
   .rail-label,
   .mobile-label {
     font-family:"DM Mono", monospace;
-    font-size:10px;
-    letter-spacing:0.16em;
+    font-size:9px;
+    letter-spacing:0.14em;
     text-transform:uppercase;
     color:var(--muted);
   }
@@ -296,13 +344,13 @@
     display:flex;
     justify-content:space-between;
     align-items:end;
-    gap:16px;
-    margin-bottom:12px;
+    gap:10px;
+    margin-bottom:8px;
   }
 
   .prob-value {
     font-family:"Instrument Serif", Georgia, serif;
-    font-size:44px;
+    font-size:36px;
     line-height:0.85;
     letter-spacing:-0.05em;
   }
@@ -327,22 +375,22 @@
   .prob-marker {
     display:flex;
     justify-content:space-between;
-    margin-top:10px;
+    margin-top:8px;
     font-family:"DM Mono", monospace;
-    font-size:10px;
+    font-size:9px;
     letter-spacing:0.08em;
     color:var(--muted);
   }
 
   .briefing {
     display:grid;
-    gap:10px;
+    gap:8px;
     align-content:start;
   }
 
   .briefing-copy {
-    font-size:14px;
-    line-height:1.6;
+    font-size:12px;
+    line-height:1.5;
     color:#403832;
   }
 
@@ -468,8 +516,7 @@
   }
 
   .mobile-rail {
-    display:grid;
-    gap:10px;
+    display:none;
   }
 
   @media (min-width: 980px) {
@@ -483,113 +530,117 @@
 
   .sidebar {
     display:none;
+    overflow:auto;
+    min-height:0;
   }
 
   @media (min-width: 980px) {
     .sidebar {
       display:grid;
       grid-template-rows:auto 1fr auto;
-      gap:18px;
-      padding:30px 28px 28px;
-      background:linear-gradient(180deg, rgba(255,255,255,0.22), rgba(255,255,255,0.08));
+      gap:14px;
+      padding:16px 18px 20px;
+      background:linear-gradient(180deg, rgba(255,255,255,0.18), rgba(255,255,255,0.06));
+      border-left:1px solid rgba(25, 21, 18, 0.08);
     }
   }
 
   .rail-top {
     display:grid;
-    gap:14px;
+    gap:10px;
+    min-height:0;
+    overflow:auto;
   }
 
   .rail-story {
     width:100%;
     border:1px solid rgba(25, 21, 18, 0.12);
     background:rgba(255,255,255,0.3);
-    border-radius:20px;
-    padding:16px;
+    border-radius:16px;
+    padding:12px;
     text-align:left;
     cursor:pointer;
+    flex-shrink:0;
   }
 
   .rail-story.active {
     background:linear-gradient(180deg, rgba(155,63,26,0.14), rgba(255,255,255,0.5));
     border-color:rgba(155,63,26,0.3);
-    box-shadow:0 16px 36px rgba(90, 31, 11, 0.1);
+    box-shadow:0 8px 20px rgba(90, 31, 11, 0.08);
   }
 
   .story-head {
     display:flex;
     justify-content:space-between;
-    gap:16px;
+    gap:8px;
     align-items:start;
   }
 
   .story-tag {
     font-family:"DM Mono", monospace;
-    font-size:10px;
-    letter-spacing:0.14em;
+    font-size:8px;
+    letter-spacing:0.12em;
     text-transform:uppercase;
     color:var(--accent);
-    margin-bottom:8px;
+    margin-bottom:4px;
+    flex-shrink:0;
   }
 
   .story-q {
     font-family:"Instrument Serif", Georgia, serif;
-    font-size:26px;
-    line-height:1;
+    font-size:18px;
+    line-height:1.1;
     letter-spacing:-0.03em;
   }
 
   .story-metric {
     text-align:right;
     white-space:nowrap;
+    flex-shrink:0;
   }
 
   .story-pct {
     font-family:"Instrument Serif", Georgia, serif;
-    font-size:36px;
+    font-size:24px;
     line-height:0.9;
     letter-spacing:-0.05em;
   }
 
   .story-delta {
-    margin-top:6px;
+    margin-top:2px;
     font-family:"DM Mono", monospace;
-    font-size:10px;
+    font-size:8px;
     color:var(--sage);
     letter-spacing:0.08em;
   }
 
   .story-summary {
-    margin-top:10px;
-    font-size:13px;
-    line-height:1.55;
+    margin-top:6px;
+    font-size:11px;
+    line-height:1.4;
     color:#4b4038;
+    display:none;
   }
 
   .rail-foot {
-    padding:16px;
-    border-radius:20px;
+    padding:12px;
+    border-radius:16px;
     background:#1e1915;
     color:#f7eddf;
+    flex-shrink:0;
   }
 
   .rail-foot .rail-label,
-  .rail-foot .cta-subtext { color:#bdaea2; }
+  .rail-foot .cta-subtext { color:#b59f9a; font-size:8px; }
 
   .rail-foot p {
-    margin:10px 0 0;
-    font-size:14px;
-    line-height:1.6;
+    margin:8px 0 0;
+    font-size:11px;
+    line-height:1.4;
   }
 
   .footer-bar {
-    position:fixed;
-    left:0;
-    right:0;
-    bottom:0;
-    z-index:5;
-    padding:14px 18px 18px;
-    background:linear-gradient(180deg, rgba(242,234,220,0), rgba(242,234,220,0.9) 28%, rgba(242,234,220,1) 100%);
+    display:none;
   }
 
   @media (min-width: 980px) {
@@ -627,6 +678,11 @@
       <span>No. 124</span>
       <span>London / Kyiv / Madrid</span>
     </div>
+  </div>
+
+  <div class="cta-header">
+    <span class="cta-header-label">👉 Your take</span>
+    <button class="cta-header-btn" id="headerBtn" type="button">Join the debate →</button>
   </div>
 
   <main class="main">
@@ -843,6 +899,7 @@ const tradersMini = document.getElementById('tradersMini');
 const swingMini = document.getElementById('swingMini');
 const stanceNote = document.getElementById('stanceNote');
 const readBtn = document.getElementById('readBtn');
+const headerBtn = document.getElementById('headerBtn');
 const footerReadBtn = document.getElementById('footerReadBtn');
 const railFootCopy = document.getElementById('railFootCopy');
 const storyRail = document.getElementById('storyRail');
@@ -896,6 +953,7 @@ function render() {
   swingMini.textContent = `${story.delta > 0 ? '+' : ''}${story.delta} pts`;
   stanceNote.textContent = story.stances[activeStance];
   readBtn.textContent = story.cta;
+  headerBtn.textContent = story.cta;
   footerReadBtn.textContent = story.cta;
   railFootCopy.textContent = story.rail;
 
