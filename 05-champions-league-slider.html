@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>V5 · Champions League Slider — sijakpreloader</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin:0; padding:0; background:#fafafa; color:#0a0a0a; font-family:"Inter", system-ui, sans-serif; }
+  body { display:flex; align-items:stretch; justify-content:center; }
+  #app { width:100%; max-width:480px; height:100vh; height:100dvh; display:flex; flex-direction:column; }
+  @media (min-width: 900px) {
+    body { background:#e5e5e5; align-items:center; padding:24px 0; }
+    #app { width:100%; max-width:560px; height:min(800px, 100dvh); border-radius:14px; overflow:hidden; box-shadow:0 30px 80px rgba(0,0,0,0.15); }
+  }
+  
+  .header { padding:18px 22px; display:flex; align-items:center; justify-content:space-between; }
+  
+  .logo { display:flex; align-items:center; gap:8px; }
+  .logo-badge { width:18px; height:18px; background:#0a0a0a; }
+  .logo-text { font-weight:600; font-size:14px; letter-spacing:-0.01em; }
+  
+  .live { font-size:11px; color:#888; font-feature-settings:'"tnum"'; }
+  
+  .content { flex:1; padding:30px 26px 0; display:flex; flex-direction:column; }
+  
+  .content-tag { font-size:11px; color:#888; letter-spacing:0.1em; text-transform:uppercase; margin-bottom:14px; }
+  
+  h1 { font-size:32px; line-height:1.1; margin:0 0 14px; font-weight:600; letter-spacing:-0.025em; }
+  
+  .subtitle { font-size:14px; color:#666; line-height:1.5; margin-top:14px; margin-bottom:0; }
+  
+  .slider-section { margin-top:38px; }
+  
+  .slider-label { display:flex; justify-content:space-between; align-items:baseline; margin-bottom:14px; }
+  .slider-label-text { font-size:11px; color:#888; letter-spacing:0.1em; text-transform:uppercase; }
+  .slider-value { font-size:48px; font-weight:600; letter-spacing:-0.04em; font-feature-settings:'"tnum"'; line-height:1; }
+  .slider-value-pct { font-size:18px; color:#888; font-weight:400; }
+  
+  .slider-track { position:relative; margin-top:14px; }
+  .slider-bg { height:4px; background:#e5e5e5; border-radius:99px; position:relative; }
+  .slider-fill { position:absolute; left:0; top:0; height:4px; width:50%; background:#0a0a0a; border-radius:99px; }
+  
+  .slider-crowd { position:absolute; left:64%; top:-6px; width:2px; height:16px; background:#dc2626; transform:translateX(-50%); }
+  
+  .slider-input { position:absolute; inset:0; opacity:0; cursor:pointer; width:100%; }
+  
+  .slider-thumb { position:absolute; left:50%; top:-7px; width:18px; height:18px; background:#fff; border:2px solid #0a0a0a; border-radius:50%; transform:translateX(-50%); pointer-events:none; box-shadow:0 2px 6px rgba(0,0,0,0.12); }
+  
+  .slider-labels { display:flex; justify-content:space-between; margin-top:10px; font-size:11px; color:#aaa; font-feature-settings:'"tnum"'; }
+  
+  .reveal { margin-top:34px; padding:18px 18px; background:#fff; border:1px solid #e5e5e5; border-radius:10px; }
+  .reveal-label { font-size:12px; color:#888; }
+  .reveal-value { font-size:24px; font-weight:600; letter-spacing:-0.02em; font-feature-settings:'"tnum"'; margin-top:6px; }
+  .reveal-text { margin-top:10px; padding-top:10px; border-top:1px solid #f0f0f0; font-size:13px; color:#444; line-height:1.5; display:none; }
+  .reveal-text.show { display:block; }
+  
+  .bottom { padding:18px 22px; border-top:1px solid #ececec; }
+  .cta { width:100%; padding:14px 22px; background:#0a0a0a; color:#fff; border:none; border-radius:8px; font-family:"Inter"; font-weight:500; font-size:14px; letter-spacing:-0.005em; cursor:pointer; }
+  .cta:hover { background:#222; }
+  
+  .cta-sub { font-size:11px; color:#999; text-align:center; margin-top:8px; }
+</style>
+</head>
+<body>
+<div id="app">
+  <div class="header">
+    <div class="logo">
+      <div class="logo-badge"></div>
+      <span class="logo-text">verdict</span>
+    </div>
+    <div class="live">8,200 fans · live</div>
+  </div>
+
+  <div class="content">
+    <div class="content-tag">⚽️ Champions League · Final</div>
+    <h1>Will Real Madrid lift the Champions League trophy this season?</h1>
+    <p class="subtitle">Slide your gut feeling. See what 8,200 fans are saying.</p>
+
+    <div class="slider-section">
+      <div class="slider-label">
+        <span class="slider-label-text">Your estimate</span>
+        <span class="slider-value"><span id="sliderValue">50</span><span class="slider-value-pct">%</span></span>
+      </div>
+      <div class="slider-track">
+        <div class="slider-bg">
+          <div class="slider-fill" id="sliderFill"></div>
+          <div class="slider-crowd"></div>
+        </div>
+        <input type="range" min="0" max="100" value="50" id="sliderInput" class="slider-input" />
+        <div class="slider-thumb" id="sliderThumb"></div>
+      </div>
+      <div class="slider-labels">
+        <span>0% impossible</span>
+        <span>50%</span>
+        <span>100% certain</span>
+      </div>
+    </div>
+
+    <div class="reveal">
+      <span class="reveal-label">The market says</span>
+      <div class="reveal-value">64<span style="font-size:14px; color:#999;">%</span></div>
+      <div class="reveal-text" id="revealText"></div>
+    </div>
+  </div>
+
+  <div class="bottom">
+    <button class="cta">Lock in your call →</button>
+    <p class="cta-sub">Free · 30 seconds · Win cash if you're right</p>
+  </div>
+</div>
+
+<script>
+const input = document.getElementById('sliderInput');
+const value = document.getElementById('sliderValue');
+const fill = document.getElementById('sliderFill');
+const thumb = document.getElementById('sliderThumb');
+const revealText = document.getElementById('revealText');
+const crowd = 64;
+
+function updateSlider() {
+  const val = +input.value;
+  value.textContent = val;
+  fill.style.width = val + '%';
+  thumb.style.left = val + '%';
+  
+  const delta = val - crowd;
+  if (Math.abs(delta) < 5) {
+    revealText.innerHTML = `You're <b>aligned with the crowd</b> — within ${Math.abs(delta)}pp.`;
+  } else if (delta > 0) {
+    const winAmount = (100/crowd).toFixed(2);
+    revealText.innerHTML = `You're <b>${delta}pp more bullish</b> than the market. If you're right, you'd win <b>$${winAmount}</b> per $1 on YES.`;
+  } else {
+    const winAmount = (100/(100-crowd)).toFixed(2);
+    revealText.innerHTML = `You're <b>${Math.abs(delta)}pp more bearish</b>. If you're right, you'd win <b>$${winAmount}</b> per $1 on NO.`;
+  }
+  revealText.classList.add('show');
+}
+
+input.addEventListener('input', updateSlider);
+updateSlider();
+</script>
+</body>
+</html>

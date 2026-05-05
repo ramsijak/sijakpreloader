@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>V2 · Editorial — sijakpreloader</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin:0; padding:0; background:#f5f1e8; color:#1a1a1a; font-family:"Instrument Serif", Georgia, serif; }
+  body { display:flex; align-items:stretch; justify-content:center; }
+  #app { width:100%; max-width:480px; height:100vh; height:100dvh; display:flex; flex-direction:column; }
+  @media (min-width: 900px) {
+    body { background:#1a1a1a; align-items:center; padding:24px 0; }
+    #app { width:100%; max-width:1280px; height:min(800px, 100dvh); border-radius:14px; overflow:hidden; box-shadow:0 30px 80px rgba(0,0,0,0.4); display:grid; grid-template-columns:1.4fr 1fr; grid-template-rows:auto 1fr auto; }
+  }
+  
+  .header { border-bottom:1.5px solid #1a1a1a; padding:14px 20px; display:flex; align-items:center; justify-content:space-between; font-family:"DM Mono"; font-size:9px; letter-spacing:0.18em; text-transform:uppercase; grid-column:1/3; }
+  @media (min-width: 900px) { .header { padding:18px 56px; font-size:10px; } }
+  
+  .header-title { font-family:"Instrument Serif"; font-size:24px; letter-spacing:-0.01em; }
+  @media (min-width: 900px) { .header-title { font-size:38px; } }
+  
+  .content { flex:1; padding:22px 20px 14px; display:flex; flex-direction:column; overflow-y:auto; }
+  @media (min-width: 900px) { .content { padding:40px 56px; border-right:1px solid #1a1a1a44; } }
+  
+  .content-tag { font-family:"DM Mono"; font-size:9px; letter-spacing:0.15em; text-transform:uppercase; color:#a04a1f; margin-bottom:4px; }
+  @media (min-width: 900px) { .content-tag { margin-bottom:12px; } }
+  
+  h1 { font-family:"Instrument Serif"; font-size:46px; line-height:0.98; margin:10px 0 12px; letter-spacing:-0.02em; font-weight:400; }
+  @media (min-width: 900px) { h1 { font-size:88px; line-height:0.98; margin:12px 0 14px; } }
+  
+  .subtitle { font-size:14.5px; line-height:1.5; color:#3a3a3a; font-family:Georgia, serif; margin:0 0 16px; }
+  @media (min-width: 900px) { .subtitle { font-size:19px; margin:0 0 22px; max-width:560px; } }
+  .subtitle b { color:#1a1a1a; }
+  
+  .prob-bar { margin-bottom:18px; }
+  @media (min-width: 900px) { .prob-bar { margin-bottom:0; } }
+  
+  .prob-label { display:flex; justify-content:space-between; align-items:baseline; margin-bottom:6px; font-family:"DM Mono"; font-size:11px; color:#666; letter-spacing:0.08em; text-transform:uppercase; }
+  @media (min-width: 900px) { .prob-label { font-size:11px; } }
+  
+  .prob-pct { color:#1a1a1a; font-family:"Instrument Serif"; font-size:30px; letter-spacing:-0.02em; }
+  @media (min-width: 900px) { .prob-pct { font-size:30px; } }
+  
+  .prob-track { height:6px; background:#1a1a1a15; position:relative; }
+  .prob-fill { position:absolute; left:0; top:0; bottom:0; width:22%; background:#a04a1f; }
+  
+  .content-cta { margin-top:18px; display:flex; align-items:center; gap:14px; }
+  @media (min-width: 900px) { .content-cta { margin-top:32px; } }
+  
+  .editorial-cta { padding:13px 22px; background:#a04a1f; color:#f5f1e8; border:none; border-radius:0; font-family:"Instrument Serif"; font-size:18px; letter-spacing:-0.01em; cursor:pointer; }
+  @media (min-width: 900px) { .editorial-cta { padding:13px 22px; } }
+  
+  .cta-subtext { font-family:"DM Mono"; color:#666; font-size:9px; }
+  @media (min-width: 900px) { .cta-subtext { font-size:11px; color:#888; } }
+  
+  .sidebar { display:none; padding:40px 40px; flex-direction:column; gap:18px; }
+  @media (min-width: 900px) { .sidebar { display:flex; } }
+  
+  .sidebar-label { font-family:"DM Mono"; font-size:10px; letter-spacing:0.18em; text-transform:uppercase; color:#1a1a1a; }
+  
+  .stories { display:flex; flex-direction:column; gap:10px; }
+  @media (min-width: 900px) { .stories { gap:18px; } }
+  
+  .story { display:grid; grid-template-columns:1fr auto; gap:14px; align-items:baseline; border-bottom:1px solid #1a1a1a22; padding-bottom:10px; }
+  @media (min-width: 900px) { .story { padding-bottom:14px; } }
+  
+  .story-tag { font-family:"DM Mono"; font-size:9px; letter-spacing:0.15em; text-transform:uppercase; color:#a04a1f; margin-bottom:4px; }
+  @media (min-width: 900px) { .story-tag { font-size:9px; } }
+  
+  .story-q { font-family:"Instrument Serif"; font-size:19px; line-height:1.1; letter-spacing:-0.01em; }
+  @media (min-width: 900px) { .story-q { font-size:22px; } }
+  
+  .story-pct { font-family:"Instrument Serif"; font-size:26px; letter-spacing:-0.02em; line-height:1; text-align:right; }
+  @media (min-width: 900px) { .story-pct { font-size:32px; } }
+  
+  .story-pct-small { font-size:12px; }
+  @media (min-width: 900px) { .story-pct-small { font-size:12px; } }
+  
+  .story-delta { font-family:"DM Mono"; font-size:10px; color:#0d6e3a; text-align:right; }
+  
+  .footer { padding:14px 20px 18px; border-top:1.5px solid #1a1a1a; background:#1a1a1a; color:#f5f1e8; display:flex; flex-direction:column; grid-column:1/3; }
+  @media (min-width: 900px) { .footer { display:none; } }
+  
+  .footer-btn { width:100%; padding:14px 20px; background:#a04a1f; color:#f5f1e8; border:none; border-radius:0; font-family:"Instrument Serif"; font-size:16px; letter-spacing:-0.01em; cursor:pointer; margin-bottom:8px; }
+  .footer-p { font-family:"DM Mono"; color:#888; text-align:center; font-size:9px; margin:0; }
+</style>
+</head>
+<body>
+<div id="app">
+  <div class="header">
+    <span>Tuesday, May 5 · 2026</span>
+    <span class="header-title">The <i>Verdict</i></span>
+    <span>Vol. III · No. 124</span>
+  </div>
+
+  <div class="content">
+    <div class="content-tag">Geopolitics · The Lede</div>
+    <h1>Will Russia and Ukraine sign a ceasefire <i>before September?</i></h1>
+    <p class="subtitle">The market says <b>22 percent</b>, down four points this week. 6,841 traders are reading the same headlines you are — and putting money behind their answer.</p>
+    
+    <div class="prob-bar">
+      <div class="prob-label">
+        <span>Ceasefire by Sept 1</span>
+        <span class="prob-pct">22<span style="font-size:14px;">%</span></span>
+      </div>
+      <div class="prob-track">
+        <div class="prob-fill"></div>
+      </div>
+    </div>
+    
+    <div class="content-cta">
+      <button class="editorial-cta">Read the market →</button>
+      <span class="cta-subtext">Free · 30s sign-up</span>
+    </div>
+  </div>
+
+  <div class="sidebar">
+    <div class="sidebar-label">Also today</div>
+    <div class="stories">
+      <div class="story">
+        <div>
+          <div class="story-tag">Climate</div>
+          <div class="story-q">Will July 2026 be the hottest July ever recorded in the UK?</div>
+        </div>
+        <div>
+          <div class="story-pct">71<span class="story-pct-small">%</span></div>
+          <div class="story-delta">▲ +9</div>
+        </div>
+      </div>
+      <div class="story">
+        <div>
+          <div class="story-tag">Sports</div>
+          <div class="story-q">Will England take back the Ashes from Australia this winter?</div>
+        </div>
+        <div>
+          <div class="story-pct">38<span class="story-pct-small">%</span></div>
+          <div class="story-delta">▲ +4</div>
+        </div>
+      </div>
+      <div class="story">
+        <div>
+          <div class="story-tag">Climate</div>
+          <div class="story-q">Will Arctic sea-ice minimum drop below 4 million km²?</div>
+        </div>
+        <div>
+          <div class="story-pct">56<span class="story-pct-small">%</span></div>
+          <div class="story-delta">▲ +1</div>
+        </div>
+      </div>
+      <div class="story">
+        <div>
+          <div class="story-tag">Geo</div>
+          <div class="story-q">Will the EU admit a new member state by year-end?</div>
+        </div>
+        <div>
+          <div class="story-pct">47<span class="story-pct-small">%</span></div>
+          <div class="story-delta">▼ -2</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <button class="footer-btn">Read the market →</button>
+    <p class="footer-p">Free · 30-second sign-up</p>
+  </div>
+</div>
+</body>
+</html>

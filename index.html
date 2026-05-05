@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>sijakpreloader</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root { --bg:#0f1115; --fg:#fff; --dim:#8a8e99; --line:#1f2129; --accent:#22c55e; }
+  html,body { margin:0; padding:0; background:var(--bg); color:var(--fg); font-family: Inter, system-ui, sans-serif; }
+  .wrap { max-width:1100px; margin:0 auto; padding:48px 32px 80px; }
+  h1 { font-size:36px; letter-spacing:-0.025em; margin:0 0 8px; font-weight:800; }
+  .lede { color:var(--dim); font-size:16px; line-height:1.5; max-width:680px; margin:0 0 36px; }
+  h2 { font-size:13px; letter-spacing:0.18em; text-transform:uppercase; color:var(--dim); margin:36px 0 14px; font-weight:600; }
+  .grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(280px, 1fr)); gap:14px; }
+  .card { display:flex; flex-direction:column; padding:18px 20px; background:#15171c; border:1px solid var(--line); border-radius:12px; text-decoration:none; color:inherit; transition:border-color .15s, transform .15s; }
+  .card:hover { border-color:var(--accent); transform:translateY(-2px); }
+  .num { font-size:11px; letter-spacing:0.18em; color:var(--accent); font-weight:600; }
+  .title { font-size:18px; font-weight:700; letter-spacing:-0.01em; margin:6px 0 4px; }
+  .sub { font-size:13px; color:var(--dim); line-height:1.45; }
+  .meta { font-size:11px; color:var(--dim); margin-top:14px; padding-top:12px; border-top:1px solid var(--line); display:flex; justify-content:space-between; }
+  code { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size:12.5px; background:#222; padding:1px 6px; border-radius:4px; color:#fff; }
+  .note { background:#15171c; border:1px solid var(--line); border-radius:12px; padding:18px 22px; margin-top:32px; font-size:13.5px; line-height:1.55; color:#c8ccd5; }
+  .note b { color:#fff; }
+  ul { padding-left:18px; margin:8px 0 0; }
+  li { margin-bottom:6px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>sijakpreloader</h1>
+  <p class="lede">A lightweight collection of standalone preloader and pre-lander concepts for a prediction-market product. Each file is a ready-to-open HTML export for quick review and handoff.</p>
+
+  <h2>Variants</h2>
+  <div class="grid">
+    <a class="card" href="01-nba-pick.html" target="_blank">
+      <span class="num">01 / NBA</span>
+      <div class="title">NBA — Lakers championship pick</div>
+      <div class="sub">Sportsbook energy. One huge YES/NO question, percentage agreement, secondary list of other teams. Mobile + desktop.</div>
+      <div class="meta"><span>Topic · NBA</span><span>Hook · Single Q</span></div>
+    </a>
+    <a class="card" href="02-editorial.html" target="_blank">
+      <span class="num">02 / EDITORIAL</span>
+      <div class="title">"The Verdict" newspaper</div>
+      <div class="sub">Editorial / news magazine framing. Geopolitics lede with sidebar of related markets. Premium feel for higher-intent traffic. Mobile + desktop.</div>
+      <div class="meta"><span>Topic · Geopolitics</span><span>Hook · Lede</span></div>
+    </a>
+    <a class="card" href="03-nhl-swipe-quiz.html" target="_blank">
+      <span class="num">03 / NHL QUIZ</span>
+      <div class="title">NHL swipe quiz</div>
+      <div class="sub">Tinder-style 3-question flow. Tap YES / NO on each, reveal the results card with a sign-up CTA. Built for Canadian hockey fans.</div>
+      <div class="meta"><span>Topic · NHL</span><span>Hook · 3-step quiz</span></div>
+    </a>
+    <a class="card" href="05-champions-league-slider.html" target="_blank">
+      <span class="num">05 / UCL</span>
+      <div class="title">Champions League slider</div>
+      <div class="sub">Drag the slider to set your probability that Real Madrid lifts the trophy. Reveals what 8,200 other fans think + your delta. Minimal aesthetic.</div>
+      <div class="meta"><span>Topic · UCL Football</span><span>Hook · Slider</span></div>
+    </a>
+    <a class="card" href="07-live-ticker.html" target="_blank">
+      <span class="num">07 / TICKER</span>
+      <div class="title">Three-question ticker</div>
+      <div class="sub">Three live-feeling cards stacked: climate, geopolitics, sports. Each with sparkline and trade button. Lets the user pick the topic that hooks them.</div>
+      <div class="meta"><span>Topic · Mixed</span><span>Hook · Ticker stack</span></div>
+    </a>
+  </div>
+
+  <div class="note">
+    <b>Repository notes</b>
+    <ul>
+      <li>Repository name: <code>sijakpreloader</code>.</li>
+      <li>Brand placeholder is <code>VERDICT</code> / <code>verdict</code> — search-replace with the real brand mark and logotype.</li>
+      <li>All percentages, trader counts, and market names are illustrative — wire them to your live odds feed.</li>
+      <li>The CTAs are inert <code>&lt;button&gt;</code> elements. Replace them with links to your sign-up route, or wrap them in <code>&lt;a href&gt;</code>.</li>
+      <li>The exported files reference shared React components in <code>../variants/</code>. Keep that relative structure intact if you move these files.</li>
+      <li>For production, convert inline styles to your CSS solution of choice and pull copy and odds into props.</li>
+    </ul>
+  </div>
+</div>
+</body>
+</html>
