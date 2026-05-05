@@ -6,168 +6,915 @@
 <title>V2 · Editorial — sijakpreloader</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Manrope:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-  * { box-sizing: border-box; }
-  html, body { margin:0; padding:0; background:#f5f1e8; color:#1a1a1a; font-family:"Instrument Serif", Georgia, serif; }
-  body { display:flex; align-items:stretch; justify-content:center; }
-  #app { width:100%; max-width:480px; height:100vh; height:100dvh; display:flex; flex-direction:column; }
-  @media (min-width: 900px) {
-    body { background:#1a1a1a; align-items:center; padding:24px 0; }
-    #app { width:100%; max-width:1280px; height:min(800px, 100dvh); border-radius:14px; overflow:hidden; box-shadow:0 30px 80px rgba(0,0,0,0.4); display:grid; grid-template-columns:1.4fr 1fr; grid-template-rows:auto 1fr auto; }
+  :root {
+    --paper:#f2eadc;
+    --ink:#191512;
+    --muted:#6c6159;
+    --line:#cdbcae;
+    --accent:#9b3f1a;
+    --accent-soft:#ead2c3;
+    --accent-deep:#5a1f0b;
+    --sage:#2d5f4f;
+    --shadow:0 28px 80px rgba(29, 20, 15, 0.22);
   }
-  
-  .header { border-bottom:1.5px solid #1a1a1a; padding:14px 20px; display:flex; align-items:center; justify-content:space-between; font-family:"DM Mono"; font-size:9px; letter-spacing:0.18em; text-transform:uppercase; grid-column:1/3; }
-  @media (min-width: 900px) { .header { padding:18px 56px; font-size:10px; } }
-  
-  .header-title { font-family:"Instrument Serif"; font-size:24px; letter-spacing:-0.01em; }
-  @media (min-width: 900px) { .header-title { font-size:38px; } }
-  
-  .content { flex:1; padding:22px 20px 14px; display:flex; flex-direction:column; overflow-y:auto; }
-  @media (min-width: 900px) { .content { padding:40px 56px; border-right:1px solid #1a1a1a44; } }
-  
-  .content-tag { font-family:"DM Mono"; font-size:9px; letter-spacing:0.15em; text-transform:uppercase; color:#a04a1f; margin-bottom:4px; }
-  @media (min-width: 900px) { .content-tag { margin-bottom:12px; } }
-  
-  h1 { font-family:"Instrument Serif"; font-size:46px; line-height:0.98; margin:10px 0 12px; letter-spacing:-0.02em; font-weight:400; }
-  @media (min-width: 900px) { h1 { font-size:88px; line-height:0.98; margin:12px 0 14px; } }
-  
-  .subtitle { font-size:14.5px; line-height:1.5; color:#3a3a3a; font-family:Georgia, serif; margin:0 0 16px; }
-  @media (min-width: 900px) { .subtitle { font-size:19px; margin:0 0 22px; max-width:560px; } }
-  .subtitle b { color:#1a1a1a; }
-  
-  .prob-bar { margin-bottom:18px; }
-  @media (min-width: 900px) { .prob-bar { margin-bottom:0; } }
-  
-  .prob-label { display:flex; justify-content:space-between; align-items:baseline; margin-bottom:6px; font-family:"DM Mono"; font-size:11px; color:#666; letter-spacing:0.08em; text-transform:uppercase; }
-  @media (min-width: 900px) { .prob-label { font-size:11px; } }
-  
-  .prob-pct { color:#1a1a1a; font-family:"Instrument Serif"; font-size:30px; letter-spacing:-0.02em; }
-  @media (min-width: 900px) { .prob-pct { font-size:30px; } }
-  
-  .prob-track { height:6px; background:#1a1a1a15; position:relative; }
-  .prob-fill { position:absolute; left:0; top:0; bottom:0; width:22%; background:#a04a1f; }
-  
-  .content-cta { margin-top:18px; display:flex; align-items:center; gap:14px; }
-  @media (min-width: 900px) { .content-cta { margin-top:32px; } }
-  
-  .editorial-cta { padding:13px 22px; background:#a04a1f; color:#f5f1e8; border:none; border-radius:0; font-family:"Instrument Serif"; font-size:18px; letter-spacing:-0.01em; cursor:pointer; }
-  @media (min-width: 900px) { .editorial-cta { padding:13px 22px; } }
-  
-  .cta-subtext { font-family:"DM Mono"; color:#666; font-size:9px; }
-  @media (min-width: 900px) { .cta-subtext { font-size:11px; color:#888; } }
-  
-  .sidebar { display:none; padding:40px 40px; flex-direction:column; gap:18px; }
-  @media (min-width: 900px) { .sidebar { display:flex; } }
-  
-  .sidebar-label { font-family:"DM Mono"; font-size:10px; letter-spacing:0.18em; text-transform:uppercase; color:#1a1a1a; }
-  
-  .stories { display:flex; flex-direction:column; gap:10px; }
-  @media (min-width: 900px) { .stories { gap:18px; } }
-  
-  .story { display:grid; grid-template-columns:1fr auto; gap:14px; align-items:baseline; border-bottom:1px solid #1a1a1a22; padding-bottom:10px; }
-  @media (min-width: 900px) { .story { padding-bottom:14px; } }
-  
-  .story-tag { font-family:"DM Mono"; font-size:9px; letter-spacing:0.15em; text-transform:uppercase; color:#a04a1f; margin-bottom:4px; }
-  @media (min-width: 900px) { .story-tag { font-size:9px; } }
-  
-  .story-q { font-family:"Instrument Serif"; font-size:19px; line-height:1.1; letter-spacing:-0.01em; }
-  @media (min-width: 900px) { .story-q { font-size:22px; } }
-  
-  .story-pct { font-family:"Instrument Serif"; font-size:26px; letter-spacing:-0.02em; line-height:1; text-align:right; }
-  @media (min-width: 900px) { .story-pct { font-size:32px; } }
-  
-  .story-pct-small { font-size:12px; }
-  @media (min-width: 900px) { .story-pct-small { font-size:12px; } }
-  
-  .story-delta { font-family:"DM Mono"; font-size:10px; color:#0d6e3a; text-align:right; }
-  
-  .footer { padding:14px 20px 18px; border-top:1.5px solid #1a1a1a; background:#1a1a1a; color:#f5f1e8; display:flex; flex-direction:column; grid-column:1/3; }
-  @media (min-width: 900px) { .footer { display:none; } }
-  
-  .footer-btn { width:100%; padding:14px 20px; background:#a04a1f; color:#f5f1e8; border:none; border-radius:0; font-family:"Instrument Serif"; font-size:16px; letter-spacing:-0.01em; cursor:pointer; margin-bottom:8px; }
-  .footer-p { font-family:"DM Mono"; color:#888; text-align:center; font-size:9px; margin:0; }
+
+  * { box-sizing:border-box; }
+  html, body {
+    margin:0;
+    min-height:100%;
+    background:
+      radial-gradient(circle at top left, rgba(155,63,26,0.16), transparent 30%),
+      linear-gradient(180deg, #eadfce 0%, #e7dccd 100%);
+    color:var(--ink);
+    font-family:"Manrope", system-ui, sans-serif;
+  }
+
+  body {
+    display:flex;
+    align-items:stretch;
+    justify-content:center;
+    padding:0;
+  }
+
+  #app {
+    width:100%;
+    max-width:520px;
+    min-height:100vh;
+    min-height:100dvh;
+    background:
+      linear-gradient(180deg, rgba(255,255,255,0.25), transparent 34%),
+      var(--paper);
+    position:relative;
+    overflow:hidden;
+  }
+
+  #app::before,
+  #app::after {
+    content:"";
+    position:absolute;
+    border-radius:999px;
+    pointer-events:none;
+    opacity:0.6;
+  }
+
+  #app::before {
+    width:240px;
+    height:240px;
+    background:rgba(155,63,26,0.08);
+    top:-120px;
+    right:-80px;
+  }
+
+  #app::after {
+    width:280px;
+    height:280px;
+    background:rgba(45,95,79,0.07);
+    bottom:-180px;
+    left:-120px;
+  }
+
+  @media (min-width: 980px) {
+    body {
+      align-items:center;
+      padding:24px;
+      background:
+        radial-gradient(circle at top left, rgba(155,63,26,0.12), transparent 24%),
+        linear-gradient(180deg, #d4c4b5 0%, #cbb8a6 100%);
+    }
+
+    #app {
+      max-width:1280px;
+      min-height:0;
+      height:min(860px, calc(100dvh - 48px));
+      border-radius:28px;
+      box-shadow:var(--shadow);
+      display:grid;
+      grid-template-columns:minmax(0, 1.45fr) minmax(360px, 0.95fr);
+      grid-template-rows:auto 1fr;
+    }
+  }
+
+  .masthead {
+    position:relative;
+    z-index:1;
+    padding:18px 22px 14px;
+    border-bottom:1px solid rgba(25, 21, 18, 0.18);
+    display:grid;
+    gap:8px;
+  }
+
+  @media (min-width: 980px) {
+    .masthead {
+      grid-column:1 / 3;
+      padding:24px 40px 18px;
+      grid-template-columns:1fr auto 1fr;
+      align-items:end;
+      gap:16px;
+    }
+  }
+
+  .masthead-row,
+  .masthead-right {
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    font-family:"DM Mono", monospace;
+    font-size:10px;
+    letter-spacing:0.16em;
+    text-transform:uppercase;
+    color:var(--muted);
+  }
+
+  .edition-chip {
+    padding:6px 10px;
+    border:1px solid rgba(25, 21, 18, 0.12);
+    border-radius:999px;
+    background:rgba(255,255,255,0.38);
+  }
+
+  .masthead-title {
+    text-align:center;
+    font-family:"Instrument Serif", Georgia, serif;
+    font-size:34px;
+    line-height:0.9;
+    letter-spacing:-0.03em;
+  }
+
+  .masthead-title i { color:var(--accent); }
+
+  @media (min-width: 980px) {
+    .masthead-title { font-size:56px; }
+  }
+
+  .main {
+    position:relative;
+    z-index:1;
+    padding:22px 22px 120px;
+    display:flex;
+    flex-direction:column;
+    gap:18px;
+  }
+
+  @media (min-width: 980px) {
+    .main {
+      padding:36px 40px 34px;
+      border-right:1px solid rgba(25, 21, 18, 0.12);
+      overflow:auto;
+      gap:24px;
+    }
+  }
+
+  .lede-meta {
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+    align-items:center;
+    font-family:"DM Mono", monospace;
+    font-size:10px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--accent);
+  }
+
+  .lede-kicker {
+    padding:7px 10px;
+    border:1px solid rgba(155,63,26,0.2);
+    background:rgba(155,63,26,0.08);
+    border-radius:999px;
+  }
+
+  .hero-grid {
+    display:grid;
+    gap:18px;
+  }
+
+  @media (min-width: 980px) {
+    .hero-grid {
+      grid-template-columns:minmax(0, 1fr) 240px;
+      align-items:start;
+      gap:28px;
+    }
+  }
+
+  h1 {
+    margin:0;
+    font-family:"Instrument Serif", Georgia, serif;
+    font-weight:400;
+    font-size:52px;
+    line-height:0.92;
+    letter-spacing:-0.04em;
+    max-width:10ch;
+  }
+
+  h1 i { color:var(--accent); }
+
+  @media (min-width: 980px) {
+    h1 { font-size:92px; }
+  }
+
+  .deck {
+    margin:14px 0 0;
+    max-width:60ch;
+    font-size:15px;
+    line-height:1.7;
+    color:#403832;
+  }
+
+  @media (min-width: 980px) {
+    .deck { font-size:19px; margin-top:18px; }
+  }
+
+  .hero-note {
+    display:grid;
+    gap:12px;
+    align-self:start;
+    padding:16px;
+    border:1px solid rgba(25, 21, 18, 0.14);
+    background:rgba(255,255,255,0.35);
+    border-radius:20px;
+    box-shadow:0 12px 36px rgba(25, 21, 18, 0.06);
+  }
+
+  .hero-note-label {
+    font-family:"DM Mono", monospace;
+    font-size:10px;
+    letter-spacing:0.16em;
+    text-transform:uppercase;
+    color:var(--muted);
+  }
+
+  .hero-note-value {
+    font-family:"Instrument Serif", Georgia, serif;
+    font-size:42px;
+    line-height:0.9;
+    letter-spacing:-0.05em;
+  }
+
+  .hero-note-copy {
+    font-size:13px;
+    line-height:1.55;
+    color:var(--muted);
+  }
+
+  .signal-grid {
+    display:grid;
+    gap:14px;
+  }
+
+  @media (min-width: 980px) {
+    .signal-grid {
+      grid-template-columns:minmax(0, 1fr) minmax(220px, 260px);
+      align-items:start;
+      gap:18px;
+    }
+  }
+
+  .prob-wrap,
+  .briefing {
+    border:1px solid rgba(25, 21, 18, 0.14);
+    border-radius:22px;
+    background:rgba(255,255,255,0.42);
+    padding:18px;
+  }
+
+  .prob-header,
+  .briefing-label,
+  .stance-label,
+  .rail-label,
+  .mobile-label {
+    font-family:"DM Mono", monospace;
+    font-size:10px;
+    letter-spacing:0.16em;
+    text-transform:uppercase;
+    color:var(--muted);
+  }
+
+  .prob-header {
+    display:flex;
+    justify-content:space-between;
+    align-items:end;
+    gap:16px;
+    margin-bottom:12px;
+  }
+
+  .prob-value {
+    font-family:"Instrument Serif", Georgia, serif;
+    font-size:44px;
+    line-height:0.85;
+    letter-spacing:-0.05em;
+  }
+
+  .prob-track {
+    position:relative;
+    height:12px;
+    border-radius:999px;
+    background:linear-gradient(90deg, rgba(155,63,26,0.08), rgba(45,95,79,0.08));
+    overflow:hidden;
+  }
+
+  .prob-fill {
+    position:absolute;
+    inset:0 auto 0 0;
+    width:22%;
+    background:linear-gradient(90deg, var(--accent), #cf7a4c);
+    border-radius:inherit;
+    transition:width 320ms ease;
+  }
+
+  .prob-marker {
+    display:flex;
+    justify-content:space-between;
+    margin-top:10px;
+    font-family:"DM Mono", monospace;
+    font-size:10px;
+    letter-spacing:0.08em;
+    color:var(--muted);
+  }
+
+  .briefing {
+    display:grid;
+    gap:10px;
+    align-content:start;
+  }
+
+  .briefing-copy {
+    font-size:14px;
+    line-height:1.6;
+    color:#403832;
+  }
+
+  .briefing-stats {
+    display:grid;
+    grid-template-columns:repeat(2, minmax(0, 1fr));
+    gap:10px;
+  }
+
+  .briefing-stat {
+    padding:10px 12px;
+    border-radius:16px;
+    background:rgba(25,21,18,0.04);
+  }
+
+  .briefing-stat strong {
+    display:block;
+    font-size:18px;
+    letter-spacing:-0.03em;
+  }
+
+  .briefing-stat span {
+    display:block;
+    margin-top:4px;
+    font-size:11px;
+    color:var(--muted);
+  }
+
+  .stance {
+    display:grid;
+    gap:10px;
+  }
+
+  .stance-buttons {
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+  }
+
+  .stance-btn,
+  .read-btn,
+  .rail-story {
+    transition:transform 150ms ease, background-color 150ms ease, color 150ms ease, border-color 150ms ease, box-shadow 150ms ease;
+  }
+
+  .stance-btn {
+    flex:1;
+    min-width:120px;
+    padding:14px 14px;
+    border:1px solid rgba(25, 21, 18, 0.15);
+    background:rgba(255,255,255,0.38);
+    border-radius:18px;
+    color:var(--ink);
+    text-align:left;
+    cursor:pointer;
+  }
+
+  .stance-btn:hover,
+  .rail-story:hover,
+  .read-btn:hover {
+    transform:translateY(-1px);
+  }
+
+  .stance-btn.active {
+    background:var(--ink);
+    color:var(--paper);
+    border-color:var(--ink);
+    box-shadow:0 10px 24px rgba(25, 21, 18, 0.12);
+  }
+
+  .stance-btn strong,
+  .stance-btn span {
+    display:block;
+  }
+
+  .stance-btn strong {
+    font-family:"Instrument Serif", Georgia, serif;
+    font-size:24px;
+    letter-spacing:-0.03em;
+  }
+
+  .stance-btn span {
+    margin-top:3px;
+    font-size:11px;
+    color:inherit;
+    opacity:0.76;
+  }
+
+  .stance-note {
+    min-height:44px;
+    font-size:14px;
+    line-height:1.55;
+    color:#403832;
+  }
+
+  .cta-row {
+    display:flex;
+    flex-wrap:wrap;
+    align-items:center;
+    gap:14px;
+  }
+
+  .read-btn {
+    padding:15px 20px;
+    border:none;
+    border-radius:999px;
+    background:var(--accent);
+    color:#fff5ed;
+    font-family:"Manrope", system-ui, sans-serif;
+    font-size:15px;
+    font-weight:700;
+    letter-spacing:-0.01em;
+    cursor:pointer;
+    box-shadow:0 12px 32px rgba(155,63,26,0.24);
+  }
+
+  .cta-subtext {
+    font-family:"DM Mono", monospace;
+    font-size:10px;
+    letter-spacing:0.12em;
+    text-transform:uppercase;
+    color:var(--muted);
+  }
+
+  .mobile-rail {
+    display:grid;
+    gap:10px;
+  }
+
+  @media (min-width: 980px) {
+    .mobile-rail { display:none; }
+  }
+
+  .mobile-stories {
+    display:grid;
+    gap:10px;
+  }
+
+  .sidebar {
+    display:none;
+  }
+
+  @media (min-width: 980px) {
+    .sidebar {
+      display:grid;
+      grid-template-rows:auto 1fr auto;
+      gap:18px;
+      padding:30px 28px 28px;
+      background:linear-gradient(180deg, rgba(255,255,255,0.22), rgba(255,255,255,0.08));
+    }
+  }
+
+  .rail-top {
+    display:grid;
+    gap:14px;
+  }
+
+  .rail-story {
+    width:100%;
+    border:1px solid rgba(25, 21, 18, 0.12);
+    background:rgba(255,255,255,0.3);
+    border-radius:20px;
+    padding:16px;
+    text-align:left;
+    cursor:pointer;
+  }
+
+  .rail-story.active {
+    background:linear-gradient(180deg, rgba(155,63,26,0.14), rgba(255,255,255,0.5));
+    border-color:rgba(155,63,26,0.3);
+    box-shadow:0 16px 36px rgba(90, 31, 11, 0.1);
+  }
+
+  .story-head {
+    display:flex;
+    justify-content:space-between;
+    gap:16px;
+    align-items:start;
+  }
+
+  .story-tag {
+    font-family:"DM Mono", monospace;
+    font-size:10px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--accent);
+    margin-bottom:8px;
+  }
+
+  .story-q {
+    font-family:"Instrument Serif", Georgia, serif;
+    font-size:26px;
+    line-height:1;
+    letter-spacing:-0.03em;
+  }
+
+  .story-metric {
+    text-align:right;
+    white-space:nowrap;
+  }
+
+  .story-pct {
+    font-family:"Instrument Serif", Georgia, serif;
+    font-size:36px;
+    line-height:0.9;
+    letter-spacing:-0.05em;
+  }
+
+  .story-delta {
+    margin-top:6px;
+    font-family:"DM Mono", monospace;
+    font-size:10px;
+    color:var(--sage);
+    letter-spacing:0.08em;
+  }
+
+  .story-summary {
+    margin-top:10px;
+    font-size:13px;
+    line-height:1.55;
+    color:#4b4038;
+  }
+
+  .rail-foot {
+    padding:16px;
+    border-radius:20px;
+    background:#1e1915;
+    color:#f7eddf;
+  }
+
+  .rail-foot .rail-label,
+  .rail-foot .cta-subtext { color:#bdaea2; }
+
+  .rail-foot p {
+    margin:10px 0 0;
+    font-size:14px;
+    line-height:1.6;
+  }
+
+  .footer-bar {
+    position:fixed;
+    left:0;
+    right:0;
+    bottom:0;
+    z-index:5;
+    padding:14px 18px 18px;
+    background:linear-gradient(180deg, rgba(242,234,220,0), rgba(242,234,220,0.9) 28%, rgba(242,234,220,1) 100%);
+  }
+
+  @media (min-width: 980px) {
+    .footer-bar { display:none; }
+  }
+
+  .footer-shell {
+    padding:10px;
+    border-radius:18px;
+    backdrop-filter:blur(14px);
+    background:rgba(255,255,255,0.54);
+    border:1px solid rgba(25,21,18,0.12);
+    box-shadow:0 10px 30px rgba(25,21,18,0.12);
+  }
+
+  .desktop-cta {
+    display:none;
+  }
+
+  @media (min-width: 980px) {
+    .desktop-cta { display:block; }
+  }
 </style>
 </head>
 <body>
 <div id="app">
-  <div class="header">
-    <span>Tuesday, May 5 · 2026</span>
-    <span class="header-title">The <i>Verdict</i></span>
-    <span>Vol. III · No. 124</span>
-  </div>
-
-  <div class="content">
-    <div class="content-tag">Geopolitics · The Lede</div>
-    <h1>Will Russia and Ukraine sign a ceasefire <i>before September?</i></h1>
-    <p class="subtitle">The market says <b>22 percent</b>, down four points this week. 6,841 traders are reading the same headlines you are — and putting money behind their answer.</p>
-    
-    <div class="prob-bar">
-      <div class="prob-label">
-        <span>Ceasefire by Sept 1</span>
-        <span class="prob-pct">22<span style="font-size:14px;">%</span></span>
-      </div>
-      <div class="prob-track">
-        <div class="prob-fill"></div>
-      </div>
+  <div class="masthead">
+    <div class="masthead-row">
+      <span>Tuesday, May 5, 2026</span>
+      <span class="edition-chip">Morning Market Edition</span>
     </div>
-    
-    <div class="content-cta">
-      <button class="editorial-cta">Read the market →</button>
-      <span class="cta-subtext">Free · 30s sign-up</span>
+    <div class="masthead-title">The <i>Verdict</i></div>
+    <div class="masthead-right">
+      <span>Vol. III</span>
+      <span>No. 124</span>
+      <span>London / Kyiv / Madrid</span>
     </div>
   </div>
 
-  <div class="sidebar">
-    <div class="sidebar-label">Also today</div>
-    <div class="stories">
-      <div class="story">
-        <div>
-          <div class="story-tag">Climate</div>
-          <div class="story-q">Will July 2026 be the hottest July ever recorded in the UK?</div>
-        </div>
-        <div>
-          <div class="story-pct">71<span class="story-pct-small">%</span></div>
-          <div class="story-delta">▲ +9</div>
-        </div>
+  <main class="main">
+    <div class="lede-meta">
+      <span class="lede-kicker" id="kicker">Geopolitics · Lead Story</span>
+      <span id="updatedAt">Updated 2m ago</span>
+      <span id="traderCount">6,841 traders active</span>
+    </div>
+
+    <div class="hero-grid">
+      <div>
+        <h1 id="headline">Will Russia and Ukraine sign a ceasefire <i>before September?</i></h1>
+        <p class="deck" id="deck">The market is leaning cold. Traders see diplomacy staying noisy, but not decisive, before late summer. Choose a market from the right rail and this spread rewrites itself like a front page.</p>
       </div>
-      <div class="story">
-        <div>
-          <div class="story-tag">Sports</div>
-          <div class="story-q">Will England take back the Ashes from Australia this winter?</div>
-        </div>
-        <div>
-          <div class="story-pct">38<span class="story-pct-small">%</span></div>
-          <div class="story-delta">▲ +4</div>
-        </div>
-      </div>
-      <div class="story">
-        <div>
-          <div class="story-tag">Climate</div>
-          <div class="story-q">Will Arctic sea-ice minimum drop below 4 million km²?</div>
-        </div>
-        <div>
-          <div class="story-pct">56<span class="story-pct-small">%</span></div>
-          <div class="story-delta">▲ +1</div>
-        </div>
-      </div>
-      <div class="story">
-        <div>
-          <div class="story-tag">Geo</div>
-          <div class="story-q">Will the EU admit a new member state by year-end?</div>
-        </div>
-        <div>
-          <div class="story-pct">47<span class="story-pct-small">%</span></div>
-          <div class="story-delta">▼ -2</div>
-        </div>
+      <div class="hero-note">
+        <div class="hero-note-label">Market temperature</div>
+        <div class="hero-note-value" id="temperature">Fragile</div>
+        <div class="hero-note-copy" id="heroNote">Negotiation chatter is up, but conviction remains thin. Most volume still clusters around delay rather than breakthrough.</div>
       </div>
     </div>
-  </div>
 
-  <div class="footer">
-    <button class="footer-btn">Read the market →</button>
-    <p class="footer-p">Free · 30-second sign-up</p>
+    <div class="signal-grid">
+      <section class="prob-wrap">
+        <div class="prob-header">
+          <div>
+            <div class="prob-header"> 
+              <span id="marketLabel">Ceasefire by Sept. 1</span>
+              <span class="prob-value"><span id="probPct">22</span>%</span>
+            </div>
+          </div>
+        </div>
+        <div class="prob-track">
+          <div class="prob-fill" id="probFill"></div>
+        </div>
+        <div class="prob-marker">
+          <span id="deltaText">Down 4 pts this week</span>
+          <span id="volumeText">Heavy debate</span>
+        </div>
+      </section>
+
+      <aside class="briefing">
+        <div class="briefing-label">Newsroom briefing</div>
+        <div class="briefing-copy" id="briefingCopy">Liquidity is clustering near low-probability outcomes, which usually means readers are consuming a lot of headlines but only a minority are willing to pay for a fast breakthrough.</div>
+        <div class="briefing-stats">
+          <div class="briefing-stat">
+            <strong id="tradersMini">6.8k</strong>
+            <span>Active traders</span>
+          </div>
+          <div class="briefing-stat">
+            <strong id="swingMini">-4 pts</strong>
+            <span>7-day move</span>
+          </div>
+        </div>
+      </aside>
+    </div>
+
+    <section class="stance">
+      <div class="stance-label">Take a read</div>
+      <div class="stance-buttons">
+        <button class="stance-btn active" type="button" data-stance="consensus">
+          <strong>Consensus</strong>
+          <span>Read the crowd as-is</span>
+        </button>
+        <button class="stance-btn" type="button" data-stance="bullish">
+          <strong>Bullish</strong>
+          <span>Why the market may be low</span>
+        </button>
+        <button class="stance-btn" type="button" data-stance="bearish">
+          <strong>Cautious</strong>
+          <span>Why traders may still fade it</span>
+        </button>
+      </div>
+      <div class="stance-note" id="stanceNote">Consensus read: price action suggests attention is high, but conviction is still concentrated in the current majority view.</div>
+    </section>
+
+    <div class="cta-row desktop-cta">
+      <button class="read-btn" id="readBtn" type="button">Read the ceasefire market →</button>
+      <span class="cta-subtext" id="ctaSubtext">Free access · 30-second sign-up</span>
+    </div>
+
+    <section class="mobile-rail">
+      <div class="mobile-label">Also on the desk</div>
+      <div class="mobile-stories" id="mobileStories"></div>
+    </section>
+  </main>
+
+  <aside class="sidebar">
+    <div class="rail-top">
+      <div class="rail-label">Select a front-page market</div>
+      <div id="storyRail"></div>
+    </div>
+    <div class="rail-foot">
+      <div class="rail-label">Reader signal</div>
+      <p id="railFootCopy">Today's strong open is in geopolitics, but climate stories are carrying the fastest momentum. Tap any card to swap the entire page.</p>
+    </div>
+  </aside>
+
+  <div class="footer-bar">
+    <div class="footer-shell">
+      <button class="read-btn" id="footerReadBtn" type="button" style="width:100%; justify-content:center; display:flex; font-size:16px; padding:16px 22px;">Read this market →</button>
+      <p class="cta-subtext" style="text-align:center; margin-top:8px;">Free access · 30-second sign-up</p>
+    </div>
   </div>
 </div>
+
+<script>
+const stories = [
+  {
+    tag: 'Geopolitics',
+    kicker: 'Geopolitics · Lead Story',
+    question: 'Will Russia and Ukraine sign a ceasefire <i>before September?</i>',
+    deck: 'The market is leaning cold. Traders see diplomacy staying noisy, but not decisive, before late summer. Choose a market from the right rail and this spread rewrites itself like a front page.',
+    pct: 22,
+    delta: -4,
+    deltaText: 'Down 4 pts this week',
+    volume: 'Heavy debate',
+    traders: 6841,
+    temperature: 'Fragile',
+    heroNote: 'Negotiation chatter is up, but conviction remains thin. Most volume still clusters around delay rather than breakthrough.',
+    briefing: 'Liquidity is clustering near low-probability outcomes, which usually means readers are consuming a lot of headlines but only a minority are willing to pay for a fast breakthrough.',
+    summary: 'Diplomatic headlines are active, but traders still price a long road to signatures.',
+    cta: 'Read the ceasefire market →',
+    rail: 'Geopolitics remains the lead draw, but conviction is still defensive rather than euphoric.',
+    stances: {
+      consensus: 'Consensus read: price action suggests attention is high, but conviction is still concentrated in the current majority view.',
+      bullish: 'Bullish read: if back-channel talks are more advanced than public briefings imply, the market may still be behind a fast thaw.',
+      bearish: 'Cautious read: each optimistic headline has faded quickly, so traders still want proof before they pay up for peace.'
+    }
+  },
+  {
+    tag: 'Climate',
+    kicker: 'Climate · Weather Desk',
+    question: 'Will July 2026 be the hottest July <i>ever recorded in the UK?</i>',
+    deck: 'Heat probabilities have marched higher with each fresh model run. Readers are no longer browsing this question as a novelty; they are treating it like a live seasonal trade.',
+    pct: 71,
+    delta: 9,
+    deltaText: 'Up 9 pts this week',
+    volume: 'Momentum building',
+    traders: 5120,
+    temperature: 'Scorching',
+    heroNote: 'The story feels less like a weather oddity and more like a consensus macro theme. Every hot forecast adds fresh confidence.',
+    briefing: 'This is the cleanest momentum chart on the page. Participation is broad, moves are persistent, and traders are paying up for continued heat.',
+    summary: 'Forecast models keep nudging hotter, and the crowd is following with unusually steady conviction.',
+    cta: 'Read the heatwave market →',
+    rail: 'Climate questions are now carrying the sharpest week-on-week acceleration in the bundle.',
+    stances: {
+      consensus: 'Consensus read: the market is treating elevated heat as the base case, not the upside case.',
+      bullish: 'Bullish read: if current model consensus holds, this contract may still undershoot how extreme the month can become.',
+      bearish: 'Cautious read: weather markets can mean-revert quickly, and one cooler turn in the models would hit crowded longs.'
+    }
+  },
+  {
+    tag: 'Sports',
+    kicker: 'Sports · Test Cricket',
+    question: 'Will England take back the Ashes <i>from Australia this winter?</i>',
+    deck: 'The market is split between home optimism and respect for Australian depth. It reads like an opinion page argument, not a settled forecast.',
+    pct: 38,
+    delta: 4,
+    deltaText: 'Up 4 pts this week',
+    volume: 'Split crowd',
+    traders: 3390,
+    temperature: 'Tense',
+    heroNote: 'Fans are buying narrative as much as numbers here. The price rises on belief, then cools when the roster reality lands.',
+    briefing: 'This is a classic identity market: loyalists are active, neutrals are skeptical, and every squad update changes the tone.',
+    summary: 'Belief is improving, but the market still prices England as the chasing side.',
+    cta: 'Read the Ashes market →',
+    rail: 'Sports traffic is lighter than geopolitics, but engagement time is stronger because readers keep arguing the spot price.',
+    stances: {
+      consensus: 'Consensus read: this price says England is live, but not yet trusted.',
+      bullish: 'Bullish read: if form swings early and home conditions bite, a sub-40 price could look far too conservative.',
+      bearish: 'Cautious read: Australia still owns the deeper default rating, so optimism must overcome structural edge.'
+    }
+  },
+  {
+    tag: 'Europe',
+    kicker: 'Europe · Enlargement',
+    question: 'Will the EU admit a new member state <i>before year-end?</i>',
+    deck: 'Policy watchers are tempted by headlines, but the market keeps insisting process matters more than rhetoric. That keeps this contract pinned near the middle.',
+    pct: 47,
+    delta: -2,
+    deltaText: 'Down 2 pts this week',
+    volume: 'Wait-and-see',
+    traders: 2980,
+    temperature: 'Measured',
+    heroNote: 'This is the page’s purest process story: lots of interest, limited impatience, and a market that refuses to rush symbolism.',
+    briefing: 'Near-even pricing suggests readers are engaged but unconvinced. Institutional hurdles still outweigh headline enthusiasm.',
+    summary: 'The midpoint price reflects interest without trust in a fast procedural finish.',
+    cta: 'Read the EU market →',
+    rail: 'European policy stories are drawing steady, low-drama participation rather than sharp directional swings.',
+    stances: {
+      consensus: 'Consensus read: traders are paying for possibility, not certainty.',
+      bullish: 'Bullish read: if political alignment firms faster than expected, a middling price could rerate abruptly upward.',
+      bearish: 'Cautious read: administrative timelines are slow by design, and symbolism alone rarely closes the gap.'
+    }
+  }
+];
+
+let activeStory = 0;
+let activeStance = 'consensus';
+
+const headline = document.getElementById('headline');
+const deck = document.getElementById('deck');
+const kicker = document.getElementById('kicker');
+const traderCount = document.getElementById('traderCount');
+const temperature = document.getElementById('temperature');
+const heroNote = document.getElementById('heroNote');
+const marketLabel = document.getElementById('marketLabel');
+const probPct = document.getElementById('probPct');
+const probFill = document.getElementById('probFill');
+const deltaText = document.getElementById('deltaText');
+const volumeText = document.getElementById('volumeText');
+const briefingCopy = document.getElementById('briefingCopy');
+const tradersMini = document.getElementById('tradersMini');
+const swingMini = document.getElementById('swingMini');
+const stanceNote = document.getElementById('stanceNote');
+const readBtn = document.getElementById('readBtn');
+const footerReadBtn = document.getElementById('footerReadBtn');
+const railFootCopy = document.getElementById('railFootCopy');
+const storyRail = document.getElementById('storyRail');
+const mobileStories = document.getElementById('mobileStories');
+
+function formatCompact(value) {
+  return value >= 1000 ? `${(value / 1000).toFixed(1)}k` : `${value}`;
+}
+
+function renderStoryButtons(target) {
+  target.innerHTML = stories.map((story, index) => `
+    <button class="rail-story${index === activeStory ? ' active' : ''}" type="button" data-index="${index}">
+      <div class="story-head">
+        <div>
+          <div class="story-tag">${story.tag}</div>
+          <div class="story-q">${story.question.replace(/<[^>]+>/g, '')}</div>
+        </div>
+        <div class="story-metric">
+          <div class="story-pct">${story.pct}%</div>
+          <div class="story-delta">${story.delta > 0 ? '▲ +' : '▼ '}${Math.abs(story.delta)}</div>
+        </div>
+      </div>
+      <div class="story-summary">${story.summary}</div>
+    </button>
+  `).join('');
+
+  target.querySelectorAll('.rail-story').forEach(button => {
+    button.addEventListener('click', () => {
+      activeStory = Number(button.dataset.index);
+      activeStance = 'consensus';
+      render();
+    });
+  });
+}
+
+function render() {
+  const story = stories[activeStory];
+  kicker.textContent = story.kicker;
+  headline.innerHTML = story.question;
+  deck.textContent = story.deck;
+  traderCount.textContent = `${story.traders.toLocaleString()} traders active`;
+  temperature.textContent = story.temperature;
+  heroNote.textContent = story.heroNote;
+  marketLabel.textContent = story.question.replace(/<[^>]+>/g, '');
+  probPct.textContent = story.pct;
+  probFill.style.width = `${story.pct}%`;
+  deltaText.textContent = story.deltaText;
+  volumeText.textContent = story.volume;
+  briefingCopy.textContent = story.briefing;
+  tradersMini.textContent = formatCompact(story.traders);
+  swingMini.textContent = `${story.delta > 0 ? '+' : ''}${story.delta} pts`;
+  stanceNote.textContent = story.stances[activeStance];
+  readBtn.textContent = story.cta;
+  footerReadBtn.textContent = story.cta;
+  railFootCopy.textContent = story.rail;
+
+  document.querySelectorAll('.stance-btn').forEach(button => {
+    button.classList.toggle('active', button.dataset.stance === activeStance);
+  });
+
+  renderStoryButtons(storyRail);
+  renderStoryButtons(mobileStories);
+}
+
+document.querySelectorAll('.stance-btn').forEach(button => {
+  button.addEventListener('click', () => {
+    activeStance = button.dataset.stance;
+    render();
+  });
+});
+
+render();
+</script>
 </body>
 </html>

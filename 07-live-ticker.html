@@ -11,7 +11,7 @@
   * { box-sizing: border-box; }
   html, body { margin:0; padding:0; background:#0e0f12; color:#fff; font-family:"Inter", system-ui, sans-serif; }
   body { display:flex; align-items:stretch; justify-content:center; }
-  #app { width:100%; max-width:480px; height:100vh; height:100dvh; display:flex; flex-direction:column; }
+  #app { width:100%; max-width:480px; min-height:100vh; min-height:100dvh; display:flex; flex-direction:column; }
   @media (min-width: 900px) {
     body { background:#050606; align-items:center; padding:24px 0; }
     #app { width:100%; max-width:560px; height:min(800px, 100dvh); border-radius:14px; overflow:hidden; box-shadow:0 30px 80px rgba(0,0,0,0.5); }
@@ -29,15 +29,20 @@
   .intro { padding:22px 22px 6px; }
   .intro-h { font-size:30px; line-height:1.05; margin:0; font-weight:700; letter-spacing:-0.025em; }
   .intro-p { font-size:13px; color:#888; margin:10px 0 0; line-height:1.5; }
+  .filters { display:flex; gap:8px; flex-wrap:wrap; padding:8px 22px 0; }
+  .filter-btn { padding:8px 12px; border-radius:999px; border:1px solid #262932; background:#15171b; color:#9ca3af; font-size:11px; cursor:pointer; }
+  .filter-btn.active { border-color:#fff; color:#fff; }
   
   .cards { flex:1; padding:14px 22px 10px; display:flex; flex-direction:column; gap:10px; overflow-y:auto; }
   
-  .card { flex:1; min-height:0; background:#15171b; border:1px solid #1f2024; border-radius:10px; padding:14px 16px; display:grid; grid-template-columns:1fr auto; gap:14px; align-items:center; position:relative; overflow:hidden; cursor:pointer; transition:border-color 0.15s; }
+  .card { flex:1; min-height:0; background:#15171b; border:1px solid #1f2024; border-radius:10px; padding:14px 16px; display:grid; grid-template-columns:1fr auto; gap:14px; align-items:flex-start; position:relative; overflow:hidden; cursor:pointer; transition:border-color 0.15s; }
   .card:hover { border-color:#22c55e; }
+  @media (min-width: 900px) { .card { align-items:center; } }
+  .card.active { border-color:var(--color); box-shadow:0 16px 32px rgba(0,0,0,0.22); }
   
   .card::before { content:''; position:absolute; left:0; top:0; bottom:0; width:3px; }
   
-  .card-left { min-width:0; }
+  .card-left { min-width:0; display:flex; flex-direction:column; gap:6px; }
   
   .card-tag { font-size:9px; color:var(--color); letter-spacing:0.18em; font-family:'"DM Mono"'; font-weight:600; margin-bottom:6px; }
   
@@ -56,6 +61,11 @@
   .card-trade:hover { background:var(--color); color:#0e0f12; }
   
   .bottom { padding:14px 22px 18px; border-top:1px solid #1f2024; }
+  .detail-panel { margin:4px 22px 0; padding:16px; border-radius:12px; border:1px solid #1f2024; background:#121418; display:grid; gap:10px; }
+  .detail-label { font-size:10px; letter-spacing:0.12em; color:#666; font-family:'"DM Mono"'; text-transform:uppercase; }
+  .detail-title { font-size:19px; font-weight:600; letter-spacing:-0.02em; }
+  .detail-copy { font-size:13px; color:#9ca3af; line-height:1.5; }
+  .detail-meta { display:flex; justify-content:space-between; gap:12px; font-size:11px; color:#888; font-family:'"DM Mono"'; }
   .cta { width:100%; padding:14px 22px; background:#fff; color:#0e0f12; border:none; border-radius:8px; font-family:"Inter"; font-weight:600; font-size:14px; letter-spacing:-0.005em; cursor:pointer; }
   .cta:hover { background:#eee; }
   
@@ -79,7 +89,23 @@
     <p class="intro-p">Pick one. Set your side. We'll tell you what the crowd thinks.</p>
   </div>
 
+  <div class="filters" id="filters">
+    <button class="filter-btn active" type="button" data-filter="ALL">All</button>
+    <button class="filter-btn" type="button" data-filter="CLIMATE">Climate</button>
+    <button class="filter-btn" type="button" data-filter="GEO">Geo</button>
+    <button class="filter-btn" type="button" data-filter="SPORTS">Sports</button>
+  </div>
+
   <div class="cards" id="cardsContainer"></div>
+  <div class="detail-panel">
+    <div class="detail-label">Selected market</div>
+    <div class="detail-title" id="detailTitle">Hottest July ever recorded in the UK?</div>
+    <div class="detail-copy" id="detailCopy">Momentum is accelerating in this contract, with more traders chasing the upside than fading it.</div>
+    <div class="detail-meta">
+      <span id="detailTraders">2,840 traders</span>
+      <span id="detailSignal">Crowd signal: warming fast</span>
+    </div>
+  </div>
 
   <div class="bottom">
     <button class="cta">See all 480 markets →</button>
@@ -89,10 +115,13 @@
 
 <script>
 const cards = [
-  { tag:'CLIMATE', q:'Hottest July ever recorded in the UK?', pct:71, delta:'+9', up:true, traders:2840, color:'#f97316' },
-  { tag:'GEO', q:'Russia–Ukraine ceasefire by September?', pct:22, delta:'-3', up:false, traders:6841, color:'#3b82f6' },
-  { tag:'SPORTS', q:'England wins the Ashes in 2026?', pct:38, delta:'+4', up:true, traders:4217, color:'#22c55e' },
+  { tag:'CLIMATE', q:'Hottest July ever recorded in the UK?', pct:71, delta:'+9', up:true, traders:2840, color:'#f97316', copy:'Momentum is accelerating in this contract, with more traders chasing the upside than fading it.', signal:'Crowd signal: warming fast' },
+  { tag:'GEO', q:'Russia–Ukraine ceasefire by September?', pct:22, delta:'-3', up:false, traders:6841, color:'#3b82f6', copy:'Attention is high, but conviction still sits with the skeptics. Traders want evidence, not just hopeful headlines.', signal:'Crowd signal: defensive' },
+  { tag:'SPORTS', q:'England wins the Ashes in 2026?', pct:38, delta:'+4', up:true, traders:4217, color:'#22c55e', copy:'This one trades like a fan debate. Price is rising, but the crowd still sees England as the underdog.', signal:'Crowd signal: live underdog' },
 ];
+
+let activeFilter = 'ALL';
+let activeCard = cards[0].q;
 
 function genSparkline(pct, up) {
   const seed = pct;
@@ -103,33 +132,82 @@ function genSparkline(pct, up) {
     const y = 30 - ((p-min)/(max-min || 1))*30;
     return `${i===0?'M':'L'}${x.toFixed(1)},${y.toFixed(1)}`;
   }).join(' ');
-  return `<svg viewBox="0 0 100 30" preserveAspectRatio="none" class="sparkline">
-    <path d="${path}" fill="none" stroke="${up?'#22c55e':'#ef4444'}" stroke-width="1.4" />
+  return `<svg viewBox="0 0 100 30" width="120" height="24" preserveAspectRatio="none" class="sparkline" style="display:block; flex-shrink:0;">
+    <path d="${path}" fill="none" stroke="${up?'#22c55e':'#ef4444'}" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
   </svg>`;
 }
 
 const container = document.getElementById('cardsContainer');
-cards.forEach(c => {
-  const card = document.createElement('div');
-  card.className = 'card';
-  card.style.setProperty('--color', c.color);
-  card.style.setProperty('--delta-color', c.up ? '#22c55e' : '#ef4444');
-  card.style.backgroundColor = '#15171b';
-  card.innerHTML = `
-    <div class="card-left">
-      <div class="card-tag">${c.tag}</div>
-      <div class="card-tag" style="font-size:9px; color:#666; margin-bottom:0;">· ${c.traders.toLocaleString()} traders</div>
-      <div class="card-q">${c.q}</div>
-      ${genSparkline(c.pct, c.up)}
-    </div>
-    <div class="card-right">
-      <div class="card-pct">${c.pct}<span class="card-pct-small">%</span></div>
-      <div class="card-delta">${c.up?'▲':'▼'} ${c.delta}</div>
-      <button class="card-trade">Trade →</button>
-    </div>
-  `;
-  container.appendChild(card);
+const detailTitle = document.getElementById('detailTitle');
+const detailCopy = document.getElementById('detailCopy');
+const detailTraders = document.getElementById('detailTraders');
+const detailSignal = document.getElementById('detailSignal');
+
+function setActiveCard(question) {
+  const selected = cards.find(card => card.q === question) || cards[0];
+  activeCard = selected.q;
+  detailTitle.textContent = selected.q;
+  detailCopy.textContent = selected.copy;
+  detailTraders.textContent = `${selected.traders.toLocaleString()} traders`;
+  detailSignal.textContent = selected.signal;
+  document.querySelectorAll('.card').forEach(cardNode => {
+    cardNode.classList.toggle('active', cardNode.dataset.question === selected.q);
+  });
+}
+
+function renderCards() {
+  container.innerHTML = '';
+  const filtered = activeFilter === 'ALL' ? cards : cards.filter(card => card.tag === activeFilter);
+  filtered.forEach(c => {
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.dataset.question = c.q;
+    card.style.setProperty('--color', c.color);
+    card.style.setProperty('--delta-color', c.up ? '#22c55e' : '#ef4444');
+    card.style.backgroundColor = '#15171b';
+    card.innerHTML = `
+      <div class="card-left">
+        <div class="card-tag">${c.tag}</div>
+        <div class="card-tag" style="font-size:9px; color:#666; margin-bottom:0;">· ${c.traders.toLocaleString()} traders</div>
+        <div class="card-q">${c.q}</div>
+        ${genSparkline(c.pct, c.up)}
+      </div>
+      <div class="card-right">
+        <div class="card-pct">${c.pct}<span class="card-pct-small">%</span></div>
+        <div class="card-delta">${c.up?'▲':'▼'} ${c.delta}</div>
+        <button class="card-trade" type="button">Trade →</button>
+      </div>
+    `;
+
+    card.addEventListener('click', () => setActiveCard(c.q));
+    card.querySelector('.card-trade').addEventListener('click', event => {
+      event.stopPropagation();
+      setActiveCard(c.q);
+      detailCopy.textContent = `${c.copy} Tap through to trade the ${c.up ? 'momentum' : 'contrarian'} side.`;
+    });
+
+    container.appendChild(card);
+  });
+
+  if (!filtered.some(card => card.q === activeCard) && filtered.length) {
+    activeCard = filtered[0].q;
+  }
+  if (filtered.length) {
+    setActiveCard(activeCard);
+  }
+}
+
+document.querySelectorAll('.filter-btn').forEach(button => {
+  button.addEventListener('click', () => {
+    activeFilter = button.dataset.filter;
+    document.querySelectorAll('.filter-btn').forEach(node => {
+      node.classList.toggle('active', node === button);
+    });
+    renderCards();
+  });
 });
+
+renderCards();
 </script>
 </body>
 </html>

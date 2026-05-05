@@ -11,7 +11,7 @@
   * { box-sizing: border-box; }
   html, body { margin:0; padding:0; background:#0a0a0a; min-height:100%; color:#fff; }
   body { display:flex; align-items:stretch; justify-content:center; }
-  #app { width:100%; max-width:480px; height:100vh; height:100dvh; display:flex; flex-direction:column; font-family:"Archivo", system-ui, sans-serif; }
+  #app { width:100%; max-width:480px; min-height:100vh; min-height:100dvh; display:flex; flex-direction:column; font-family:"Archivo", system-ui, sans-serif; }
   @media (min-width: 900px) {
     body { background: #050505; align-items:center; padding:24px 0; }
     #app { width:100%; max-width:1280px; height:min(800px, 100dvh); border-radius:14px; overflow:hidden; box-shadow:0 30px 80px rgba(0,0,0,0.6); display:grid; grid-template-columns:1.1fr 0.9fr; grid-template-rows:auto 1fr; }
@@ -56,13 +56,17 @@
   .pick-confirm-text { font-size:14px; flex:1; }
   @media (min-width: 900px) { .pick-confirm-text { font-size:16px; } }
   .pick-confirm-text b { font-weight:700; }
+  .market-read { font-size:11px; color:#6f6f6f; font-family:"JetBrains Mono"; letter-spacing:0.05em; }
+  @media (min-width: 900px) { .market-read { font-size:12px; } }
   .hint { font-size:11px; color:#666; text-align:center; margin-bottom:16px; font-family:"JetBrains Mono"; letter-spacing:0.1em; }
   @media (min-width: 900px) { .hint { display:none; } }
   .teams { border-top:1px solid #1a1a1a; padding-top:14px; }
   .teams-label { font-size:10px; letter-spacing:0.18em; color:#666; font-family:"JetBrains Mono"; margin-bottom:10px; }
   .team-list { display:flex; flex-direction:column; gap:6px; }
   @media (min-width: 900px) { .team-list { gap:8px; } }
-  .team-item { display:grid; grid-template-columns:1fr auto auto; gap:10px; align-items:center; padding:10px 12px; background:#101010; border:1px solid #1a1a1a; border-radius:6px; font-size:13px; }
+  .team-item { width:100%; display:grid; grid-template-columns:1fr auto auto; gap:10px; align-items:center; padding:10px 12px; background:#101010; border:1px solid #1a1a1a; border-radius:6px; font-size:13px; color:#fff; text-align:left; cursor:pointer; }
+  .team-item:hover { border-color:#2e2e2e; transform:translateY(-1px); }
+  .team-item.active { border-color:#22c55e; background:#0f1c14; box-shadow:0 12px 28px rgba(34,197,94,0.08); }
   @media (min-width: 900px) { .team-item { padding:14px 16px; gap:14px; font-size:15px; } }
   .team-name { overflow:hidden; white-space:nowrap; text-overflow:ellipsis; }
   .team-desc { font-size:10px; color:#666; font-family:"JetBrains Mono"; letter-spacing:0.05em; margin-top:1px; }
@@ -73,6 +77,11 @@
   @media (min-width: 900px) { .team-pct-small { font-size:13px; } }
   .team-delta { font-family:"JetBrains Mono"; font-size:10px; color:#22c55e; text-align:right; min-width:30px; }
   @media (min-width: 900px) { .team-delta { font-size:11px; } }
+  .team-spotlight { margin-top:12px; padding:14px 16px; border-radius:10px; border:1px solid #1a1a1a; background:#0c0c0c; display:none; gap:8px; }
+  .team-spotlight.show { display:grid; }
+  .team-spotlight-label { font-size:10px; letter-spacing:0.16em; color:#666; font-family:"JetBrains Mono"; text-transform:uppercase; }
+  .team-spotlight-title { font-family:"Archivo Black"; font-size:20px; letter-spacing:-0.02em; }
+  .team-spotlight-copy { font-size:13px; line-height:1.5; color:#999; }
   .sidebar { display:none; padding:56px 40px; background:#070707; border-left:1px solid #1a1a1a; }
   @media (min-width: 900px) { .sidebar { display:flex; flex-direction:column; } }
   .sidebar-label { font-size:11px; letter-spacing:0.18em; color:#666; font-family:"JetBrains Mono"; margin-bottom:18px; }
@@ -95,7 +104,7 @@
     </div>
     <div class="live">
       <span class="pulse"></span>
-      <span>12,418 LIVE</span>
+      <span id="liveCount">12,418 LIVE</span>
     </div>
   </div>
 
@@ -116,47 +125,53 @@
     </div>
     
     <div class="pick-confirm" id="pickConfirm">
-      <div class="pick-confirm-text">You picked <b id="pickLabel">YES</b>. Sign up to lock it in →</div>
+      <div class="pick-confirm-text" id="pickText">You picked <b id="pickLabel">YES</b>. Sign up to lock it in →</div>
       <button class="cta" style="width:auto; padding:12px 18px; font-size:13px;">Claim →</button>
     </div>
+    <div class="market-read" id="marketRead">Crowd lean: Lakers believers are still in charge.</div>
     
     <div class="hint" id="hint">↑ TAP YES OR NO TO CONTINUE</div>
     
     <div class="teams">
       <div class="teams-label">OR PICK ANOTHER TEAM</div>
       <div class="team-list" id="teamList">
-        <div class="team-item">
+        <button class="team-item" type="button" data-team="Boston Celtics" data-pct="24" data-delta="+3" data-copy="Boston is drawing sharp money from defense-first bettors who trust their late-game shot profile.">
           <div>
             <div class="team-name">Boston Celtics</div>
             <div class="team-desc">TO WIN IT ALL</div>
           </div>
           <div class="team-pct">24<span class="team-pct-small">%</span></div>
           <div class="team-delta">▲ +3</div>
-        </div>
-        <div class="team-item">
+        </button>
+        <button class="team-item" type="button" data-team="Denver Nuggets" data-pct="18" data-delta="-2" data-copy="Denver still has respect, but the price faded as bettors priced in a rougher path through the bracket.">
           <div>
             <div class="team-name">Denver Nuggets</div>
             <div class="team-desc">TO WIN IT ALL</div>
           </div>
           <div class="team-pct">18<span class="team-pct-small">%</span></div>
           <div class="team-delta">▼ -2</div>
-        </div>
-        <div class="team-item">
+        </button>
+        <button class="team-item" type="button" data-team="Oklahoma City Thunder" data-pct="15" data-delta="+5" data-copy="Thunder action is momentum-driven right now. Younger fans are pushing this contract higher than the old guard expected.">
           <div>
             <div class="team-name">Oklahoma City Thunder</div>
             <div class="team-desc">TO WIN IT ALL</div>
           </div>
           <div class="team-pct">15<span class="team-pct-small">%</span></div>
           <div class="team-delta">▲ +5</div>
-        </div>
-        <div class="team-item">
+        </button>
+        <button class="team-item" type="button" data-team="Milwaukee Bucks" data-pct="9" data-delta="-1" data-copy="Milwaukee is still live, but the market wants healthier signals before it chases the upside.">
           <div>
             <div class="team-name">Milwaukee Bucks</div>
             <div class="team-desc">TO WIN IT ALL</div>
           </div>
           <div class="team-pct">9<span class="team-pct-small">%</span></div>
           <div class="team-delta">▼ -1</div>
-        </div>
+        </button>
+      </div>
+      <div class="team-spotlight" id="teamSpotlight">
+        <div class="team-spotlight-label">Team spotlight</div>
+        <div class="team-spotlight-title" id="teamSpotlightTitle">Boston Celtics · 24%</div>
+        <div class="team-spotlight-copy" id="teamSpotlightCopy">Boston is drawing sharp money from defense-first bettors who trust their late-game shot profile.</div>
       </div>
     </div>
   </div>
@@ -164,46 +179,46 @@
   <div class="sidebar">
     <div class="sidebar-label">OTHER TEAMS · LIVE ODDS</div>
     <div class="team-list">
-      <div class="team-item">
+      <button class="team-item" type="button" data-team="Boston Celtics" data-pct="24" data-delta="+3" data-copy="Boston is drawing sharp money from defense-first bettors who trust their late-game shot profile.">
         <div>
           <div class="team-name">Boston Celtics</div>
           <div class="team-desc">TO WIN IT ALL</div>
         </div>
         <div class="team-pct">24<span class="team-pct-small">%</span></div>
         <div class="team-delta">▲ +3</div>
-      </div>
-      <div class="team-item">
+      </button>
+      <button class="team-item" type="button" data-team="Denver Nuggets" data-pct="18" data-delta="-2" data-copy="Denver still has respect, but the price faded as bettors priced in a rougher path through the bracket.">
         <div>
           <div class="team-name">Denver Nuggets</div>
           <div class="team-desc">TO WIN IT ALL</div>
         </div>
         <div class="team-pct">18<span class="team-pct-small">%</span></div>
         <div class="team-delta">▼ -2</div>
-      </div>
-      <div class="team-item">
+      </button>
+      <button class="team-item" type="button" data-team="Oklahoma City Thunder" data-pct="15" data-delta="+5" data-copy="Thunder action is momentum-driven right now. Younger fans are pushing this contract higher than the old guard expected.">
         <div>
           <div class="team-name">Oklahoma City Thunder</div>
           <div class="team-desc">TO WIN IT ALL</div>
         </div>
         <div class="team-pct">15<span class="team-pct-small">%</span></div>
         <div class="team-delta">▲ +5</div>
-      </div>
-      <div class="team-item">
+      </button>
+      <button class="team-item" type="button" data-team="Milwaukee Bucks" data-pct="9" data-delta="-1" data-copy="Milwaukee is still live, but the market wants healthier signals before it chases the upside.">
         <div>
           <div class="team-name">Milwaukee Bucks</div>
           <div class="team-desc">TO WIN IT ALL</div>
         </div>
         <div class="team-pct">9<span class="team-pct-small">%</span></div>
         <div class="team-delta">▼ -1</div>
-      </div>
-      <div class="team-item">
+      </button>
+      <button class="team-item" type="button" data-team="New York Knicks" data-pct="7" data-delta="+1" data-copy="Knicks interest is loud on social feeds, but the market still treats the run as a long shot with upside.">
         <div>
           <div class="team-name">New York Knicks</div>
           <div class="team-desc">TO WIN IT ALL</div>
         </div>
         <div class="team-pct">7<span class="team-pct-small">%</span></div>
         <div class="team-delta">▲ +1</div>
-      </div>
+      </button>
     </div>
     <div class="sidebar-cta">
       <button class="cta" style="width:100%;">Pick a team · Win real cash →</button>
@@ -218,16 +233,52 @@
 </div>
 
 <script>
+const pickConfirm = document.getElementById('pickConfirm');
+const pickText = document.getElementById('pickText');
+const hint = document.getElementById('hint');
+const marketRead = document.getElementById('marketRead');
+const teamSpotlight = document.getElementById('teamSpotlight');
+const teamSpotlightTitle = document.getElementById('teamSpotlightTitle');
+const teamSpotlightCopy = document.getElementById('teamSpotlightCopy');
+const liveCount = document.getElementById('liveCount');
+
+function showPick(message, detail) {
+  pickText.innerHTML = `${detail} <b>${message}</b>. Sign up to lock it in →`;
+  pickConfirm.classList.add('show');
+  hint.style.display = 'none';
+}
+
 document.querySelectorAll('.side-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     document.querySelectorAll('.side-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
-    const side = btn.dataset.side;
-    document.getElementById('pickLabel').textContent = side.toUpperCase();
-    document.getElementById('pickConfirm').classList.add('show');
-    document.getElementById('hint').style.display = 'none';
+    const side = btn.dataset.side.toUpperCase();
+    showPick(side, 'You picked');
+    marketRead.textContent = side === 'YES'
+      ? 'You are with the crowd. Lakers believers still outnumber skeptics 68 to 32.'
+      : 'You are fading the crowd. A NO ticket is the contrarian side at 32%.';
   });
 });
+
+document.querySelectorAll('.team-item').forEach(item => {
+  item.addEventListener('click', () => {
+    const { team, pct, copy } = item.dataset;
+    document.querySelectorAll('.team-item').forEach(node => {
+      node.classList.toggle('active', node.dataset.team === team);
+    });
+    teamSpotlight.classList.add('show');
+    teamSpotlightTitle.textContent = `${team} · ${pct}%`;
+    teamSpotlightCopy.textContent = copy;
+    showPick(team.toUpperCase(), 'Spotlighted');
+    marketRead.textContent = `${team} is sitting at ${pct}%. Tap YES or NO above if you want the broad Lakers market instead.`;
+  });
+});
+
+let liveTotal = 12418;
+setInterval(() => {
+  liveTotal += Math.floor(Math.random() * 3);
+  liveCount.textContent = `${liveTotal.toLocaleString()} LIVE`;
+}, 3200);
 </script>
 </body>
 </html>

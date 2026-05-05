@@ -11,7 +11,7 @@
   * { box-sizing: border-box; }
   html, body { margin:0; padding:0; background:#fafafa; color:#0a0a0a; font-family:"Inter", system-ui, sans-serif; }
   body { display:flex; align-items:stretch; justify-content:center; }
-  #app { width:100%; max-width:480px; height:100vh; height:100dvh; display:flex; flex-direction:column; }
+  #app { width:100%; max-width:480px; min-height:100vh; min-height:100dvh; display:flex; flex-direction:column; }
   @media (min-width: 900px) {
     body { background:#e5e5e5; align-items:center; padding:24px 0; }
     #app { width:100%; max-width:560px; height:min(800px, 100dvh); border-radius:14px; overflow:hidden; box-shadow:0 30px 80px rgba(0,0,0,0.15); }
@@ -51,12 +51,18 @@
   .slider-thumb { position:absolute; left:50%; top:-7px; width:18px; height:18px; background:#fff; border:2px solid #0a0a0a; border-radius:50%; transform:translateX(-50%); pointer-events:none; box-shadow:0 2px 6px rgba(0,0,0,0.12); }
   
   .slider-labels { display:flex; justify-content:space-between; margin-top:10px; font-size:11px; color:#aaa; font-feature-settings:'"tnum"'; }
+  .slider-presets { display:flex; flex-wrap:wrap; gap:8px; margin-top:18px; }
+  .preset-btn { padding:8px 12px; border:1px solid #d9d9d9; border-radius:999px; background:#fff; color:#444; font-size:12px; cursor:pointer; }
+  .preset-btn.active { border-color:#0a0a0a; color:#0a0a0a; box-shadow:0 8px 18px rgba(0,0,0,0.08); }
   
   .reveal { margin-top:34px; padding:18px 18px; background:#fff; border:1px solid #e5e5e5; border-radius:10px; }
   .reveal-label { font-size:12px; color:#888; }
   .reveal-value { font-size:24px; font-weight:600; letter-spacing:-0.02em; font-feature-settings:'"tnum"'; margin-top:6px; }
   .reveal-text { margin-top:10px; padding-top:10px; border-top:1px solid #f0f0f0; font-size:13px; color:#444; line-height:1.5; display:none; }
   .reveal-text.show { display:block; }
+  .stance-card { margin-top:14px; padding:14px; border-radius:10px; background:#f6f6f6; border:1px solid #ececec; }
+  .stance-card-label { font-size:11px; text-transform:uppercase; letter-spacing:0.1em; color:#888; }
+  .stance-card-copy { margin-top:8px; font-size:13px; color:#444; line-height:1.5; }
   
   .bottom { padding:18px 22px; border-top:1px solid #ececec; }
   .cta { width:100%; padding:14px 22px; background:#0a0a0a; color:#fff; border:none; border-radius:8px; font-family:"Inter"; font-weight:500; font-size:14px; letter-spacing:-0.005em; cursor:pointer; }
@@ -98,12 +104,22 @@
         <span>50%</span>
         <span>100% certain</span>
       </div>
+      <div class="slider-presets" id="sliderPresets">
+        <button class="preset-btn" type="button" data-value="20">Skeptical</button>
+        <button class="preset-btn active" type="button" data-value="50">Coin flip</button>
+        <button class="preset-btn" type="button" data-value="64">Match crowd</button>
+        <button class="preset-btn" type="button" data-value="82">All in</button>
+      </div>
     </div>
 
     <div class="reveal">
       <span class="reveal-label">The market says</span>
       <div class="reveal-value">64<span style="font-size:14px; color:#999;">%</span></div>
       <div class="reveal-text" id="revealText"></div>
+      <div class="stance-card">
+        <div class="stance-card-label">Your angle</div>
+        <div class="stance-card-copy" id="stanceCardCopy">You are 14 points below the market, so you are fading the crowd right now.</div>
+      </div>
     </div>
   </div>
 
@@ -119,6 +135,7 @@ const value = document.getElementById('sliderValue');
 const fill = document.getElementById('sliderFill');
 const thumb = document.getElementById('sliderThumb');
 const revealText = document.getElementById('revealText');
+const stanceCardCopy = document.getElementById('stanceCardCopy');
 const crowd = 64;
 
 function updateSlider() {
@@ -130,17 +147,34 @@ function updateSlider() {
   const delta = val - crowd;
   if (Math.abs(delta) < 5) {
     revealText.innerHTML = `You're <b>aligned with the crowd</b> — within ${Math.abs(delta)}pp.`;
+    stanceCardCopy.textContent = 'You are reading this almost exactly like the market. This is the safest way to browse before taking a side.';
   } else if (delta > 0) {
     const winAmount = (100/crowd).toFixed(2);
     revealText.innerHTML = `You're <b>${delta}pp more bullish</b> than the market. If you're right, you'd win <b>$${winAmount}</b> per $1 on YES.`;
+    stanceCardCopy.textContent = 'You are leaning more confident than the crowd. That makes your upside cleaner, but you need Madrid to finish the job.';
   } else {
     const winAmount = (100/(100-crowd)).toFixed(2);
     revealText.innerHTML = `You're <b>${Math.abs(delta)}pp more bearish</b>. If you're right, you'd win <b>$${winAmount}</b> per $1 on NO.`;
+    stanceCardCopy.textContent = 'You are fading the crowd. The market is optimistic, but your number says the path is shakier than most fans think.';
   }
   revealText.classList.add('show');
+
+  document.querySelectorAll('.preset-btn').forEach(button => {
+    button.classList.toggle('active', Number(button.dataset.value) === val);
+  });
+
+  document.querySelector('.cta').textContent = delta >= 0
+    ? 'Lock in your YES lean →'
+    : 'Lock in your NO lean →';
 }
 
 input.addEventListener('input', updateSlider);
+document.querySelectorAll('.preset-btn').forEach(button => {
+  button.addEventListener('click', () => {
+    input.value = button.dataset.value;
+    updateSlider();
+  });
+});
 updateSlider();
 </script>
 </body>
