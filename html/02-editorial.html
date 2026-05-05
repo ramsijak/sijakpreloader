@@ -198,19 +198,19 @@
   .main {
     position:relative;
     z-index:1;
-    padding:14px 16px 14px;
+    padding:12px 14px 14px;
     display:flex;
     flex-direction:column;
-    gap:12px;
+    gap:10px;
     overflow:auto;
     min-height:0;
   }
 
   @media (min-width: 980px) {
     .main {
-      padding:16px 24px 20px;
+      padding:14px 20px 16px;
       border-right:1px solid rgba(25, 21, 18, 0.12);
-      gap:16px;
+      gap:12px;
       overflow:auto;
     }
   }
@@ -218,17 +218,17 @@
   .lede-meta {
     display:flex;
     flex-wrap:wrap;
-    gap:8px;
+    gap:6px;
     align-items:center;
     font-family:"DM Mono", monospace;
-    font-size:9px;
+    font-size:8px;
     letter-spacing:0.12em;
     text-transform:uppercase;
     color:var(--accent);
   }
 
   .lede-kicker {
-    padding:7px 10px;
+    padding:4px 8px;
     border:1px solid rgba(155,63,26,0.2);
     background:rgba(155,63,26,0.08);
     border-radius:999px;
@@ -236,14 +236,14 @@
 
   .hero-grid {
     display:grid;
-    gap:12px;
+    gap:10px;
   }
 
   @media (min-width: 980px) {
     .hero-grid {
-      grid-template-columns:minmax(0, 1fr) 180px;
+      grid-template-columns:minmax(0, 1fr) 160px;
       align-items:start;
-      gap:14px;
+      gap:12px;
     }
   }
 
@@ -251,7 +251,7 @@
     margin:0;
     font-family:"Instrument Serif", Georgia, serif;
     font-weight:400;
-    font-size:40px;
+    font-size:36px;
     line-height:0.95;
     letter-spacing:-0.04em;
     max-width:11ch;
@@ -260,72 +260,72 @@
   h1 i { color:var(--accent); }
 
   @media (min-width: 980px) {
-    h1 { font-size:56px; }
+    h1 { font-size:48px; }
   }
 
   .deck {
-    margin:6px 0 0;
+    margin:4px 0 0;
     max-width:50ch;
-    font-size:13px;
-    line-height:1.5;
+    font-size:12px;
+    line-height:1.45;
     color:#403832;
   }
 
   @media (min-width: 980px) {
-    .deck { font-size:14px; margin-top:8px; }
+    .deck { font-size:13px; margin-top:6px; }
   }
 
   .hero-note {
     display:grid;
-    gap:8px;
+    gap:6px;
     align-self:start;
-    padding:12px;
+    padding:10px;
     border:1px solid rgba(25, 21, 18, 0.14);
     background:rgba(255,255,255,0.35);
-    border-radius:16px;
-    box-shadow:0 8px 24px rgba(25, 21, 18, 0.05);
+    border-radius:14px;
+    box-shadow:0 6px 16px rgba(25, 21, 18, 0.04);
   }
 
   .hero-note-label {
     font-family:"DM Mono", monospace;
-    font-size:9px;
-    letter-spacing:0.14em;
+    font-size:8px;
+    letter-spacing:0.12em;
     text-transform:uppercase;
     color:var(--muted);
   }
 
   .hero-note-value {
     font-family:"Instrument Serif", Georgia, serif;
-    font-size:32px;
+    font-size:28px;
     line-height:0.9;
     letter-spacing:-0.05em;
   }
 
   .hero-note-copy {
-    font-size:12px;
-    line-height:1.4;
+    font-size:11px;
+    line-height:1.35;
     color:var(--muted);
   }
 
   .signal-grid {
     display:grid;
-    gap:12px;
+    gap:10px;
   }
 
   @media (min-width: 980px) {
     .signal-grid {
-      grid-template-columns:minmax(0, 1fr) minmax(200px, 240px);
+      grid-template-columns:minmax(0, 1fr) minmax(140px, 200px);
       align-items:start;
-      gap:14px;
+      gap:12px;
     }
   }
 
   .prob-wrap,
   .briefing {
     border:1px solid rgba(25, 21, 18, 0.14);
-    border-radius:18px;
+    border-radius:16px;
     background:rgba(255,255,255,0.42);
-    padding:14px;
+    padding:12px;
   }
 
   .prob-header,
@@ -350,14 +350,14 @@
 
   .prob-value {
     font-family:"Instrument Serif", Georgia, serif;
-    font-size:36px;
+    font-size:32px;
     line-height:0.85;
     letter-spacing:-0.05em;
   }
 
   .prob-track {
     position:relative;
-    height:12px;
+    height:10px;
     border-radius:999px;
     background:linear-gradient(90deg, rgba(155,63,26,0.08), rgba(45,95,79,0.08));
     overflow:hidden;
@@ -383,39 +383,33 @@
   }
 
   .briefing {
-    display:grid;
-    gap:8px;
-    align-content:start;
+    display:none;
   }
 
-  .briefing-copy {
-    font-size:12px;
-    line-height:1.5;
-    color:#403832;
+  .stance {
+    display:none;
   }
 
   .briefing-stats {
-    display:grid;
-    grid-template-columns:repeat(2, minmax(0, 1fr));
-    gap:10px;
+    display:none;
   }
 
   .briefing-stat {
-    padding:10px 12px;
-    border-radius:16px;
+    padding:8px 10px;
+    border-radius:14px;
     background:rgba(25,21,18,0.04);
   }
 
   .briefing-stat strong {
     display:block;
-    font-size:18px;
+    font-size:14px;
     letter-spacing:-0.03em;
   }
 
   .briefing-stat span {
     display:block;
-    margin-top:4px;
-    font-size:11px;
+    margin-top:2px;
+    font-size:9px;
     color:var(--muted);
   }
 
